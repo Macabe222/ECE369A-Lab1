@@ -46,11 +46,11 @@ module InstructionMemory(Address, Instruction);
     output reg [31:0] Instruction;    // Instruction at memory location Address
     initial begin
         for (i = 0, i < 8, i = i + 1) begin
-            Memory[i] = i * 3;
+            Memory[i] <= i * 3;
         end
     end
     initial begin
-        output<=Memory[Address[8:2]];
+        output<= Memory[Address[8:2]];
     end
 
 endmodule
