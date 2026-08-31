@@ -39,7 +39,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 module InstructionFetchUnit(Instruction, PCResult, Reset, Clk);
-
-    /* Please fill in the implementation here... */
+    reg PCAddResult;
+    output reg Instruction;
+    output reg PCResult;
+    input Reset;
+    input Clk;
+    
+    PCAdder(PCResult,PCAddResult);
+    ProgramCounter(PCAddResult, PCResult, Reset, Clk);
+    InstructionMemory(PCResult, Instruction);
+     
+    
 endmodule
 
