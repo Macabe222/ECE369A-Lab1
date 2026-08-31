@@ -28,7 +28,10 @@ module ProgramCounter_tb();
 
 	initial begin
 	
-    /* Please fill in the implementation here... */
+    #10 Reset <= 1; Address <= 0;
+    #10 Reset <= 0;
+    #10 Reset <= 0; Address <= 10;
+    #10 Reset <= 0; Address <= 15;
 	
 	end
 
