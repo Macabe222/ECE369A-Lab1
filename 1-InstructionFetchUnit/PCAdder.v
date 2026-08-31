@@ -23,9 +23,10 @@ module PCAdder(PCResult, PCAddResult);
 
     input [31:0] PCResult;
 
-    output [31:0] PCAddResult;
+    output reg [31:0] PCAddResult;
 
-    /* Please fill in the implementation here... */
-
+    always @(*) begin
+        PCAddResult = PCResult + 32'd4;
+    end
 endmodule
 
