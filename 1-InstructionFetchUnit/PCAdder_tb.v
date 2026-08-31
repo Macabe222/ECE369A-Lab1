@@ -20,7 +20,9 @@ module PCAdder_tb();
 
 	initial begin
 	
-    /* Please fill in the implementation here... */
+    #10 PCResult <= 0;
+    #10 PCResult <= 10;
+    #10 PCResult <= 20;
 	
 	end
 
