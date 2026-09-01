@@ -20,7 +20,10 @@ module InstructionMemory_tb();
 
 	initial begin
 	
-    /* Please fill in the implementation here... */
+    #10 Address = 0;
+    #10 Address = 4;
+    #10 Address = 8;
+    #10 Address = 12;
 	
 	end
 
