@@ -11,7 +11,7 @@ module Top(Clk, Reset, out7, en_out);
     wire [31:0] Instruction;
     wire [31:0] PCResult;
     wire ClkOut;
-    ClkDiv a1(Clk, 1'b0, ClkOut);
+    ClkDiv u1(Clk, 1'b0, ClkOut);
     InstructionFetchUnit u2(Instruction, PCResult, Reset, ClkOut);
     assign instruct = Instruction[15:0];
     assign Result = PCResult[15:0];
