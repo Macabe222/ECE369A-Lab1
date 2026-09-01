@@ -39,15 +39,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 module InstructionFetchUnit(Instruction, PCResult, Reset, Clk);
-    reg PCAddResult;
-    output reg Instruction;
-    output reg PCResult;
+    wire [31:0] PCAddResult;
+    output wire [31:0] Instruction;
+    output wire [31:0] PCResult;
     input Reset;
     input Clk;
     
-    PCAdder(PCResult,PCAddResult);
-    ProgramCounter(PCAddResult, PCResult, Reset, Clk);
-    InstructionMemory(PCResult, Instruction);
+    PCAdder a1(PCResult,PCAddResult);
+    ProgramCounter a2(PCAddResult, PCResult, Reset, Clk);
+    InstructionMemory a3(PCResult, Instruction);
      
     
 endmodule
