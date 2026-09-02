@@ -23,6 +23,7 @@
 // to the first instruction in your instruction memory (i.e., the first address 
 // location, 0x00000000H).
 ////////////////////////////////////////////////////////////////////////////////
+//Sequential register which updates on the positive edfe of clk, the output depends mainly on reset, since if it is 1 it will be forced to 0x000000000 but if it is 0 it will store whatever is on Address into PCResult
 
 module ProgramCounter(Address, PCResult, Reset, Clk);
 
@@ -31,12 +32,12 @@ module ProgramCounter(Address, PCResult, Reset, Clk);
 
 	output reg [31:0] PCResult;
 
-    always @(posedge Clk) begin
+	always @(posedge Clk) begin//This will happen on the positive edge of clock we have the Non Blocking <= since it is a sequential register
         if (Reset == 1)begin 
-            PCResult <= 32'h00000000;
+            PCResult <= 32'h00000000; //When reset is selected it will set PCResult to 0
         end
         else begin
-            PCResult <= Address;
+            PCResult <= Address; //This grabs whatever is inside Address and gives it to PCResult
         end
     end
 
