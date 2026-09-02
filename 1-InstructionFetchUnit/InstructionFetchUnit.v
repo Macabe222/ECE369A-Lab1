@@ -39,16 +39,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 module InstructionFetchUnit(Instruction, PCResult, Reset, Clk);
-    wire [31:0] PCAddResult;
-    output wire [31:0] Instruction;
-    output wire [31:0] PCResult;
+
+//We are connecting everything together following the diagram
+    wire [31:0] PCAddResult; //We declare wires because it is a physical connection that is going from module to module, PCAddResult goes to Program Counter
+    output wire [31:0] Instruction; //Instruction is an output that is why it is also a wire since it leaves Instruction memory
+    output wire [31:0] PCResult; //PCResult is also a wire since it goes from program counter to pcadder and instruction memory
     input Reset;
     input Clk;
     
-    PCAdder a1(PCResult,PCAddResult);
+    PCAdder a1(PCResult,PCAddResult); //PC Result connects to Instruction Memory and PCAdder to produce PCAddResult and Instruction
     ProgramCounter a2(PCAddResult, PCResult, Reset, Clk);
     InstructionMemory a3(PCResult, Instruction);
-     
+     //Everything is connected and the outputs will connect to 2 other modules in a top module.
     
 endmodule
 
