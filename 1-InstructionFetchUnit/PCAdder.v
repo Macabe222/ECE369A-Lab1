@@ -18,15 +18,18 @@
 // PC + 4. The result should always be an increment of the signal 'PCResult' by 
 // 4 (i.e., PCAddResult = PCResult + 4).
 ////////////////////////////////////////////////////////////////////////////////
+//We are incrementing by 4 in this PCAdder; PCAddResult will update when PCResult updates.
+//It takes the PCResult and adds 4 in a 32-bit instruction memory; since every instruction is 4 bytes, that is why we are adding 4
+
 
 module PCAdder(PCResult, PCAddResult);
 
-    input [31:0] PCResult;
+    input [31:0] PCResult; //Delaring the input 
 
-    output reg [31:0] PCAddResult;
+    output reg [31:0] PCAddResult; //Declaring output
 
-    always @(*) begin
-        PCAddResult = PCResult + 32'd4;
+    always @(*) begin //We use blocking assignment because it is combinational logic @(*)
+        PCAddResult = PCResult + 32'd4;  //We are adding by 4 using 32'd4 whihc is a 32 bit wide constant that has the decimal value 4
     end
 endmodule
 
