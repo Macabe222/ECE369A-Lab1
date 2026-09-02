@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// Team Members:
-// Overall percent effort of each team meber: 
+// Team Members: Kamil, Ian, Macabe
+// Equal effort. 
 // 
 // ECE369A - Computer Architecture
 // Laboratory 3 (PostLab)
