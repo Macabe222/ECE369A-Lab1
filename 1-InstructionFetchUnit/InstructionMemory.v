@@ -36,6 +36,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//This is modeling 128 words of instruction storage, that is why the for loop is from 0 to i27 since it can have 128 entries as is said in the given description.
+//Basically this program takes the address and looks it up in the memory and whatever instruction is there it will return it
+
 module InstructionMemory(Address, Instruction); 
 
     input [31:0] Address;        // Input Address 
@@ -46,13 +49,13 @@ module InstructionMemory(Address, Instruction);
     
     integer i;
     initial begin 
-        for ( i = 0; i < 128; i = i +1) begin
+        for ( i = 0; i < 128; i = i +1) begin //The for loop fills every word of the instruction memory with a value so it doesnt have random values
             memory[i] = i * 3;
          end
       end
       
       always @(*) begin
-        Instruction = memory[Address[8:2]];
+          Instruction = memory[Address[8:2]]; //Gives whatever is inside of the Address inside of memory
       end
 
 endmodule
