@@ -2,7 +2,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Team Members: Kamil, Ian, Macabe
-// Equal effort. 
+// Equal effort. 33% for each one, we all contributed to different parts of the project, we divided the file creation and combined everything together.
 // 
 // ECE369A - Computer Architecture
 // Laboratory 3 (PostLab)
