@@ -16,14 +16,14 @@ module Instructionfetchunit_tb();
     );
     
     initial begin
-        Clk <= 1'b0;
-        forever #10 Clk <= ~Clk;
+        Clk <= 1'b0; //Clk starts at 0
+        forever #10 Clk <= ~Clk;//Clk flips every 10 ns
     end
     
     initial begin 
-        Reset <= 1'b1;
+        Reset <= 1'b1;//Reset
         #20;
-        Reset <= 1'b0;
+        Reset <= 1'b0; //Continue with the normal process
         end
 
 
