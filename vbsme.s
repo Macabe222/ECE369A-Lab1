@@ -804,7 +804,7 @@ sadRow:
     li      $t5, 0              # Window column count
 
 sadColumn:
-    beq     $t5, $t2, sadNextRow # If done with all columns on the row go to next column
+    beq     $t5, $t2, sadNextRow # If done with all columns on the row go to next row
     lw      $t6, 0($t9)         # Load current frame element
     lw      $t7, 0($s2)         # Load current window element
     sub     $t7, $t6, $t7       # Calculate difference
@@ -814,7 +814,7 @@ sadColumn:
 absDone:
     add     $t8, $t8, $t7       # Increment sum with current absolute difference
     addi    $t9, $t9, 4         # Increment current frame element
-    addi    $s2, $s2, 4         # Increment current windwo element
+    addi    $s2, $s2, 4         # Increment current window element
     addi    $t5, $t5, 1         # Increment column count
     j       sadColumn
 
@@ -833,3 +833,6 @@ sadDone:
     move    $v1, $s7
 
 next:
+    # Find top left of next window here, store in $s6 and $s7
+
+    j       loop
