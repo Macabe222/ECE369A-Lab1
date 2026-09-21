@@ -786,7 +786,8 @@ vbsme:
     li      $s1, 0              # Window index
     add     $t9, $a1, $0        # Store starting memory address for frame in $t9
     mul     $s0, $t2, $t3       # Calculate total window elements
-    li      $s3, 0              # Running window count
+    li      $s3, 0              # Minimum column
+    li      $s4, 0              # Maximum column
     li      $s6, 0              # Current row
     li      $s7, 0              # Current column
 
