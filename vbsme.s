@@ -854,8 +854,8 @@ goDown:
     add     $s6, $s6, $t0
     j       loop
 goLeft:
-
+    subi    $s7, $s7, 1
     j       loop
 goUp:
-
+    sub     $s6, $s6, $t0
     j       loop
