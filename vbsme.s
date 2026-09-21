@@ -833,6 +833,29 @@ sadDone:
     move    $v1, $s7
 
 next:
-    # Find top left of next window here, store in $s6 and $s7
+    # Find top left of next window here, store in $s6 and $s7 restart window loop
+
+    subi    $s9, $t2, 1
+    add     $s9, $s6, $s9
+    beq     $s9, $t0, goDown
+
+    subi    $s9, $t3, 1
+    add     $s9, $s7, $s9
+    beq     $s9, $t1, goLeft
+
+    beq     , , goUp
+
+    beq     , , goRight
+
+goRight:
+    addi    $s7, $s7, 1
+    j       loop
+goDown:
+    add     $s6, $s6, $t0
+    j       loop
+goLeft:
+
+    j       loop
+goUp:
 
     j       loop
