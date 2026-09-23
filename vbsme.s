@@ -776,87 +776,240 @@ print_result:
 
 # Begin subroutine
 vbsme:
-    li      $v0, 0              # reset $v0 and $v1
+    li      $v0, 0
     li      $v1, 0
-    li      $s5, 0xFFFFFFFF     # Load sum with largest value
-    lw      $t0, 0($a0)         # Load frame width into $t0
-    lw      $t1, 4($a0)         # Load frame height into $t1
-    lw      $t2, 8($a0)         # Load window width into $t2
-    lw      $t3, 12($a0)        # Load window height into $t3
-    li      $s1, 0              # Window index
-    add     $t9, $a1, $0        # Store starting memory address for frame in $t9
-    mul     $s0, $t2, $t3       # Calculate total window elements
-    li      $s3, 0              # Minimum column
-    li      $s4, 0              # Maximum column
-    li      $s6, 0              # Current row
-    li      $s7, 0              # Current column
 
-loop:
-    mul     $t9, $t0, $s6       # row number * frame width
-    add     $t9, $t9, $s7       # Navigate to correct column in row
-    mul     $t9, $t9, 4         # Calculate byte offset
-    add     $t9, $t9, $a1       # Add array start address
-    add     $s2, $a2, $0        # Store starting memory address for window in $s2
-    li      $t8, 0              # Running sum
-    li      $t4, 0              # Window row count
+    move    $s8, $ra
 
-sadRow:
-    beq     $t4, $t3, sadDone   # If end of window is reached branch to sadDone
-    li      $t5, 0              # Window column count
+    lw      $t0, 0($a0)
+    lw      $t1, 4($a0)
+    lw      $t2, 8($a0)
+    lw      $t3, 12($a0)
 
-sadColumn:
-    beq     $t5, $t2, sadNextRow # If done with all columns on the row go to next row
-    lw      $t6, 0($t9)         # Load current frame element
-    lw      $t7, 0($s2)         # Load current window element
-    sub     $t7, $t6, $t7       # Calculate difference
-    bgez    $t7, absDone
-    sub     $t7, $0, $t7
+    sub     $s7, $t0, $t2
+    sub     $s5, $t1, $t3
 
-absDone:
-    add     $t8, $t8, $t7       # Increment sum with current absolute difference
-    addi    $t9, $t9, 4         # Increment current frame element
-    addi    $s2, $s2, 4         # Increment current window element
-    addi    $t5, $t5, 1         # Increment column count
-    j       sadColumn
+    li      $s4, 0
+    li      $s6, 0
 
-sadNextRow:
-    sub     $t5, $t0, $t2       # Calculate frame width - window width for start of next row in frame
-    sll     $t5, $t5, 2         # Calculate byte offset
-    add     $t9, $t9, $t5       # Add distance to next row to current location in the frame
-    addi    $t4, $t4, 1         # Increment window row count here since this is visited once per row
+    li      $t4, 0
+    li      $t5, 0
 
-    j       sadRow
+    li      $s0, 0
+    li      $s1, 0
+    li      $s3, 2147483647
 
-sadDone:
-    bge     $t8, $s5, next
-    move    $s5, $t8            # Set new lowest SAD, set coordinates in $v0 and $v1
-    move    $v0, $s6
-    move    $v1, $s7
+search_loop:
 
-next:
-    # Find top left of next window here, store in $s6 and $s7 restart window loop
+right_loop:
+    # Calculate SAD at current position
+    jal     calculate_sad
 
-    subi    $s9, $t2, 1
-    add     $s9, $s6, $s9
-    beq     $s9, $t0, goDown
+    # Check if current SAD is better than best SAD
+    slt     $t8, $s2, $s3
 
-    subi    $s9, $t3, 1
-    add     $s9, $s7, $s9
-    beq     $s9, $t1, goLeft
+    # If not better, skip the update
+    beq     $t8, $zero, right_no_update
 
-    beq     , , goUp
+    # Save new best SAD
+    move    $s3, $s2
 
-    beq     , , goRight
+    # Save row of best position
+    move    $s0, $t4
 
-goRight:
-    addi    $s7, $s7, 1
-    j       loop
-goDown:
-    add     $s6, $s6, $t0
-    j       loop
-goLeft:
-    subi    $s7, $s7, 1
-    j       loop
-goUp:
-    sub     $s6, $s6, $t0
-    j       loop
+    # Save column of best position
+    move    $s1, $t5
+
+right_no_update:
+    # If at max column, stop moving right
+    beq     $t5, $s5, right_done
+
+    # Move one column to the right
+    addi    $t5, $t5, 1
+
+    # Check the new position
+    j       right_loop
+
+
+right_done:
+    # Move minimum row boundary down
+    addi    $s6, $s6, 1
+
+    # If min row passed max row, search is finished
+    bgt     $s6, $s7, search_done
+
+
+down_loop:
+    # Move one row down
+    addi    $t4, $t4, 1
+
+    # Calculate SAD at current position
+    jal     calculate_sad
+
+    # Check if current SAD is better
+    slt     $t8, $s2, $s3
+
+    # If not better, skip the update
+    beq     $t8, $zero, down_no_update
+
+    # Save new best SAD
+    move    $s3, $s2
+
+    # Save row of best position
+    move    $s0, $t4
+
+    # Save column of best position
+    move    $s1, $t5
+
+down_no_update:
+    # If at max row, stop moving down
+    beq     $t4, $s7, down_done
+
+    # Continue moving down
+    j       down_loop
+
+
+down_done:
+    # Move maximum column boundary inward
+    addi    $s5, $s5, -1
+
+    # If max column passed min column, search is finished
+    blt     $s5, $s4, search_done
+
+
+left_loop:
+    # Move one column to the left
+    addi    $t5, $t5, -1
+
+    # Calculate SAD at current position
+    jal     calculate_sad
+
+    # Check if current SAD is better
+    slt     $t8, $s2, $s3
+
+    # If not better, skip the update
+    beq     $t8, $zero, left_no_update
+
+    # Save new best SAD
+    move    $s3, $s2
+
+    # Save row of best position
+    move    $s0, $t4
+
+    # Save column of best position
+    move    $s1, $t5
+
+left_no_update:
+    # If at min column, stop moving left
+    beq     $t5, $s4, left_done
+
+    # Continue moving left
+    j       left_loop
+
+
+left_done:
+    # Move maximum row boundary inward
+    addi    $s7, $s7, -1
+
+    # If max row passed min row, search is finished
+    blt     $s7, $s6, search_done
+
+
+up_loop:
+    # Move one row up
+    addi    $t4, $t4, -1
+
+    # Calculate SAD at current position
+    jal     calculate_sad
+
+    # Check if current SAD is better
+    slt     $t8, $s2, $s3
+
+    # If not better, skip the update
+    beq     $t8, $zero, up_no_update
+
+    # Save new best SAD
+    move    $s3, $s2
+
+    # Save row of best position
+    move    $s0, $t4
+
+    # Save column of best position
+    move    $s1, $t5
+
+up_no_update:
+    # If at min row, stop moving up
+    beq     $t4, $s6, up_done
+
+    # Continue moving up
+    j       up_loop
+
+
+up_done:
+    # Move minimum column boundary inward
+    addi    $s4, $s4, 1
+
+    # If min column passed max column, search is finished
+    bgt     $s4, $s5, search_done
+
+    # Start next inner ring at the new minimum column
+    move    $t5, $s4
+
+    # Start another circular search
+    j       search_loop
+
+
+search_done:
+    # Return best row
+    move    $v0, $s0
+
+    # Return best column
+    move    $v1, $s1
+
+    # Restore original return address
+    move    $ra, $s8
+
+    # Return to the caller
+    jr      $ra
+calculate_sad:
+    li      $s2, 0
+    li      $t6, 0
+
+sad_row_loop:
+    bge     $t6, $t2, sad_done
+
+    li      $t7, 0
+
+sad_col_loop:
+    bge     $t7, $t3, sad_next_row
+
+    add     $t8, $t4, $t6
+    mul     $t8, $t8, $t1
+    add     $t8, $t8, $t5
+    add     $t8, $t8, $t7
+    sll     $t8, $t8, 2
+    add     $t8, $a1, $t8
+    lw      $t8, 0($t8)
+
+    mul     $t9, $t6, $t3
+    add     $t9, $t9, $t7
+    sll     $t9, $t9, 2
+    add     $t9, $a2, $t9
+    lw      $t9, 0($t9)
+
+    sub     $t8, $t8, $t9
+    bgez    $t8, difference_positive
+    sub     $t8, $zero, $t8
+
+difference_positive:
+    add     $s2, $s2, $t8
+
+    addi    $t7, $t7, 1
+    j       sad_col_loop
+
+sad_next_row:
+    addi    $t6, $t6, 1
+    j       sad_row_loop
+
+sad_done:
+    jr      $ra
