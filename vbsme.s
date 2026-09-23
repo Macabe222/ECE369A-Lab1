@@ -803,7 +803,7 @@ search_loop:
 
 right_loop:
     # Calculate SAD at current position
-    jal     calculate_sad
+    jal     calculate_sad 
 
     # Check if current SAD is better than best SAD
     slt     $t8, $s2, $s3
