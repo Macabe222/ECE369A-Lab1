@@ -30,14 +30,28 @@ module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
 
 	input [3:0] ALUControl; // control bits for ALU operation
                                 // you need to adjust the bitwidth as needed
-	input [31:0] A, B;	    // inputs
+	input signed [31:0] A, B;	    // inputs
 
-	output [31:0] ALUResult;	// answer
-	output Zero;	    // Zero=1 if ALUResult == 0
+	output reg [63:0] ALUResult;	// answer
+	output reg Zero;	    // Zero=1 if ALUResult == 0
 
-    always @ begin
+    always @(*) begin
+        case (ALUControl)
+            4'b0000: ALUResult = A + B; // Addition
+            4'b0001: ALUResult = A - B; // Subtraction
+            4'b0010: ALUResult = A * B; // Multiplication
+            4'b0011: ALUResult = A & B; // Bitwise AND
+            4'b0100: ALUResult = A | B; // Bitwise OR
+            4'b0101: ALUResult = (A > B) ? 64d'1, 32d'0; // Set on less than
+            4'b0110: ALUResult = A ^ B; // Bitwise XOR
+            4'b0111: ALUResult = ~(A | B); // Bitwise NOR
+            4'b1000: ALUResult = ~(A & B); // Bitwise NAND
+            4'b1001: ALUResult = A >> B; // Shift right logical
+            4'b1010: ALUResult = A << B; // Shift left logical
+            default: ALUResult = 0;
+        endcase
 
+        Zero = (result == 64d'0);
     end
-    /* Please fill in the implementation here... */
 
 endmodule
