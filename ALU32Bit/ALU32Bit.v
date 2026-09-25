@@ -42,7 +42,7 @@ module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
             4'b0010: ALUResult = A * B; // Multiplication
             4'b0011: ALUResult = A & B; // Bitwise AND
             4'b0100: ALUResult = A | B; // Bitwise OR
-            4'b0101: ALUResult = (A > B) ? 64d'1, 32d'0; // Set on less than
+            4'b0101: ALUResult = (A < B) ? 64'd1 : 64'd0; // Set on less than
             4'b0110: ALUResult = A ^ B; // Bitwise XOR
             4'b0111: ALUResult = ~(A | B); // Bitwise NOR
             4'b1000: ALUResult = ~(A & B); // Bitwise NAND
@@ -51,7 +51,7 @@ module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
             default: ALUResult = 0;
         endcase
 
-        Zero = (result == 64d'0);
+        Zero = (ALUResult == 64'd0);
     end
 
 endmodule
