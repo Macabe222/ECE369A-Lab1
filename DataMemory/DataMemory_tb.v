@@ -32,9 +32,48 @@ module DataMemory_tb();
 	end
 
 	initial begin
+        Address = 32'h00000000;
+        MemWrite = 0;
+        MemRead = 0;
 
-        #100;
+        #20;
+        WriteData = 32'h12345678;
+        MemWrite = 1;
 
+        #20;
+        MemWrite = 0;
+        MemRead = 1;
+
+        #10;
+        $display("Address: %h, WriteData: %h, ReadData: %h", Address, WriteData, ReadData);
+
+        #10;
+        Address = 32'h00000004;
+        WriteData = 32'hABCDEF01;
+        MemWrite = 1;
+
+        #20;
+        MemWrite = 0;
+        MemRead = 1;
+
+        #10
+        $display("Address: %h, WriteData: %h, ReadData: %h", Address, WriteData, ReadData);
+
+        #10
+        Address = 32'h00000000;
+        MemRead = 1;
+
+        #10;
+        $display("Address: %h, WriteData: %h, ReadData: %h", Address, WriteData, ReadData);
+
+        #10;
+        MemRead = 0;
+
+        #10;
+        $display("Address: %h, WriteData: %h, ReadData: %h", Address, WriteData, ReadData);
+
+        #10;
+        $finish;
 
 	end
 
