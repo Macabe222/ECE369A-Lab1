@@ -2,12 +2,12 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // ECE369 - Computer Architecture
-// 
+//
 // Module - DataMemory_tb.v
 // Description - Test the 'DataMemory.v' module.
 ////////////////////////////////////////////////////////////////////////////////
 
-module DataMemory_tb(); 
+module DataMemory_tb();
 
     reg     [31:0]  Address;
     reg     [31:0]  WriteData;
@@ -18,13 +18,13 @@ module DataMemory_tb();
     wire [31:0] ReadData;
 
     DataMemory u0(
-        .Address(Address), 
-        .WriteData(WriteData), 
-        .Clk(Clk), 
-        .MemWrite(MemWrite), 
-        .MemRead(MemRead), 
+        .Address(Address),
+        .WriteData(WriteData),
+        .Clk(Clk),
+        .MemWrite(MemWrite),
+        .MemRead(MemRead),
         .ReadData(ReadData)
-    ); 
+    );
 
 	initial begin
 		Clk <= 1'b0;
@@ -32,10 +32,10 @@ module DataMemory_tb();
 	end
 
 	initial begin
-	
-    /* Please fill in the implementation here... */
-	
+
+        #100;
+
+
 	end
 
 endmodule
-

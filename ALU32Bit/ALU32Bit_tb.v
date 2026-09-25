@@ -24,8 +24,6 @@ module ALU32Bit_tb();
     );
 
 	initial begin
-
-	initial begin
 	    // ADD 3+3 ALUResult should be 6
 	    #100 ALUControl = 4'b0000;
 		A = 32'd3;
@@ -53,7 +51,7 @@ module ALU32Bit_tb();
 		// Bitwise AND 32d'11 32d'2 ALUResult should be 32d'2
 		#100 ALUControl = 4'b0011;
 		A = 32'd11;
-		B = 32d'2;
+		B = 32'd2;
 		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero)
 
 		// Bitwise OR 32d'11 32d'2 ALUResult should be 32d'11
@@ -62,13 +60,13 @@ module ALU32Bit_tb();
 		B = 4'b0010;
 		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero)
 
-		// SLT 2 5 ALUResult should be all 1s
+		// SLT 2 5 ALUResult should be 32'h00000001
 		#100 ALUControl = 4'b0101;
 		A = 32'd2;
 		B = 32'd5;
 		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero)
 
-		// Bitwise XOR 32d'11 32d'2 ALUResult should be 32d'9
+		// Bitwise XOR 32d'11 32d'2 ALUResult should be 32d'7
 		#100 ALUControl = 4'b0110;
 		A = 32'd2;
 		B = 32'd5;
@@ -88,11 +86,11 @@ module ALU32Bit_tb();
 
 		// Shift Right Logical 32d'4 32d'2 ALUResult should be 1
 		#100 ALUControl = 4'b1001;
-		A = 32'd2;
-		B = 32'd5;
+		A = 32'd4;
+		B = 32'd2;
 		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero)
 
-		// Shift Left Logical 32d'4 32d'2 ALUResult should be 8
+		// Shift Left Logical 32d'4 32d'2 ALUResult should be 16
 		#100 ALUControl = 4'b1010;
 		A = 32'd4;
 		B = 32'd2;
