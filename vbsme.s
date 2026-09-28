@@ -2,7 +2,7 @@
 #  Team Members: Kamil, Ian and Macabe
 #  % Effort    :
 # Everyone helped during the process; Kamil wrote the initial loop process to have an idea of how to move around the frame, Macabe wrote the SAD calculations, and Ian translated the loop
-# It was around 33% for each, we think we divided everything equally. 
+# It was around 33% for each, we think we divided everything equally.
 #
 # ECE369A,
 #
@@ -778,27 +778,37 @@ print_result:
 
 # Begin subroutine
 vbsme:
+    # Initialize return values
     li      $v0, 0
     li      $v1, 0
 
     move    $s8, $ra
 
+    # Read window and frame dimensions from memory
     lw      $t0, 0($a0)
     lw      $t1, 4($a0)
     lw      $t2, 8($a0)
     lw      $t3, 12($a0)
 
+    # Calculate frame - window width and column offsets
     sub     $s7, $t0, $t2
     sub     $s5, $t1, $t3
 
+    # Initialize minimum row
     li      $s4, 0
+
+    # Initialize minimum column
     li      $s6, 0
 
+    # Initialize current row and column position
     li      $t4, 0
     li      $t5, 0
 
+    # Initialize best row and column position
     li      $s0, 0
     li      $s1, 0
+
+    # Initialize sum with highest value
     li      $s3, 2147483647
 
 search_loop:
@@ -838,7 +848,7 @@ right_done:
     addi    $s6, $s6, 1
 
     # If min row passed max row, search is finished
-    #For example if the frame is 4x4 and the window is 4x4, then after moving right, we will move down, 
+    #For example if the frame is 4x4 and the window is 4x4, then after moving right, we will move down,
     #but since the min row is now 1 and max row is 0, we will stop searching
     bgt     $s6, $s7, search_done
 
@@ -985,33 +995,48 @@ sad_row_loop:
     li      $t7, 0
 
 sad_col_loop:
+    # If row is done branch to next row
     bge     $t7, $t3, sad_next_row
 
+    # Calculate frame row
+    # Current row frame position + current window row
     add     $t8, $t4, $t6
+    # Multiply frame row by frame width
     mul     $t8, $t8, $t1
+    # Add the current column position
     add     $t8, $t8, $t5
+    # Add the current window column offset
     add     $t8, $t8, $t7
+    # Convert to byte offset and load
     sll     $t8, $t8, 2
     add     $t8, $a1, $t8
     lw      $t8, 0($t8)
 
+    # Current  window row * window width
     mul     $t9, $t6, $t3
+    # Add current window column
     add     $t9, $t9, $t7
+    # Convert to byte offset load
     sll     $t9, $t9, 2
     add     $t9, $a2, $t9
     lw      $t9, 0($t9)
 
+    # Calculate difference
     sub     $t8, $t8, $t9
+    # If difference is positive skip to difference positive
+    # otherwise subtract from zero to make positive
     bgez    $t8, difference_positive
     sub     $t8, $zero, $t8
 
 difference_positive:
+    # Add the current absolute difference to the running total
     add     $s2, $s2, $t8
-
+    # Increment window column
     addi    $t7, $t7, 1
     j       sad_col_loop
 
 sad_next_row:
+    # Increment window row
     addi    $t6, $t6, 1
     j       sad_row_loop
 
