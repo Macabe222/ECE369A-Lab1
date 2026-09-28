@@ -1,6 +1,7 @@
 #  Fall 2026
-#  Team Members:
+#  Team Members: Kamil, Ian and Macabe
 #  % Effort    :
+# Everyone helped during the process; Kamil wrote the initial loop process to have an idea of how to move around the frame, Macabe wrote the SAD calculations, and Ian translated the loop 
 #
 # ECE369A,
 #
@@ -802,8 +803,8 @@ vbsme:
 search_loop:
 
 right_loop:
-    # Calculate SAD at current position
-    jal     calculate_sad 
+    # Send to calculate sad starting from the current position and go through the window
+    jal     calculate_sad
 
     # Check if current SAD is better than best SAD
     slt     $t8, $s2, $s3
@@ -832,10 +833,12 @@ right_no_update:
 
 
 right_done:
-    # Move minimum row boundary down
+    # Move minimum row boundary down, since we dont want to go through it again
     addi    $s6, $s6, 1
 
     # If min row passed max row, search is finished
+    #For example if the frame is 4x4 and the window is 4x4, then after moving right, we will move down, 
+    #but since the min row is now 1 and max row is 0, we will stop searching
     bgt     $s6, $s7, search_done
 
 
@@ -843,7 +846,7 @@ down_loop:
     # Move one row down
     addi    $t4, $t4, 1
 
-    # Calculate SAD at current position
+    # Send to calculate sad starting from the current position and go through the window
     jal     calculate_sad
 
     # Check if current SAD is better
@@ -881,7 +884,7 @@ left_loop:
     # Move one column to the left
     addi    $t5, $t5, -1
 
-    # Calculate SAD at current position
+    # Send to calculate sad starting from the current position and go through the window
     jal     calculate_sad
 
     # Check if current SAD is better
@@ -919,7 +922,7 @@ up_loop:
     # Move one row up
     addi    $t4, $t4, -1
 
-    # Calculate SAD at current position
+    # Send to calculate sad starting from the current position and go through the window
     jal     calculate_sad
 
     # Check if current SAD is better
