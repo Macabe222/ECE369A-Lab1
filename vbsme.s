@@ -1,7 +1,8 @@
 #  Fall 2026
 #  Team Members: Kamil, Ian and Macabe
 #  % Effort    :
-# Everyone helped during the process; Kamil wrote the initial loop process to have an idea of how to move around the frame, Macabe wrote the SAD calculations, and Ian translated the loop 
+# Everyone helped during the process; Kamil wrote the initial loop process to have an idea of how to move around the frame, Macabe wrote the SAD calculations, and Ian translated the loop
+# It was around 33% for each, we think we divided everything equally. 
 #
 # ECE369A,
 #
