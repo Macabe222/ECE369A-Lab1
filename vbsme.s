@@ -1,5 +1,5 @@
 #  Fall 2026
-#  Team Members: Kamil, Ian and Macabe
+#  Team Members: Kamil (33%), Ian (33%0 and Macabe (33%)
 #  % Effort    :
 # Everyone helped during the process; Kamil wrote the initial loop process to have an idea of how to move around the frame, Macabe wrote the SAD calculations, and Ian translated the loop
 # It was around 33% for each, we think we divided everything equally.
