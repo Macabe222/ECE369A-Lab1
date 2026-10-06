@@ -45,9 +45,8 @@ module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
             4'b0101: ALUResult = (A < B) ? 64'd1 : 64'd0; // Set on less than
             4'b0110: ALUResult = A ^ B; // Bitwise XOR
             4'b0111: ALUResult = ~(A | B); // Bitwise NOR
-            4'b1000: ALUResult = ~(A & B); // Bitwise NAND
+            4'b1000: ALUResult = A << B; // Shift left logical
             4'b1001: ALUResult = A >> B; // Shift right logical
-            4'b1010: ALUResult = A << B; // Shift left logical
             default: ALUResult = 0;
         endcase
 
