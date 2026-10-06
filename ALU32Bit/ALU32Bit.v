@@ -47,6 +47,38 @@ module ALU32Bit(ALUControl, A, B, ALUResult, Zero);
             4'b0111: ALUResult = ~(A | B); // Bitwise NOR
             4'b1000: ALUResult = A << B; // Shift left logical
             4'b1001: ALUResult = A >> B; // Shift right logical
+            4'b1010: begin
+                if (A >= 0) begin
+                    ALUResult = 64'd0;
+                end
+                else begin
+                    ALUResult = 64'd1;
+                end
+            end
+            4'b1011: begin
+                if (A > 0) begin
+                    ALUResult = 64'd0;
+                end
+                else begin
+                    ALUResult = 64'd1;
+                end
+            end
+            4'b1100: begin
+                if (A <= 0) begin
+                    ALUResult = 64'd0;
+                end
+                else begin
+                    ALUResult = 64'd1;
+                end
+            end
+            4'b1101: begin
+                if (A < 0) begin
+                    ALUResult = 64'd0;
+                end
+                else begin
+                    ALUResult = 64'd1;
+                end
+            end
             default: ALUResult = 0;
         endcase
 
