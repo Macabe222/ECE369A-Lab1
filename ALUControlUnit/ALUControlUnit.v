@@ -32,6 +32,7 @@ module ALUControlUnit(ALUOp, funct, control_signal);
             4'b1001: control_signal = 4'b1011; // BGTZ
             4'b1010: control_signal = 4'b1100; // BLEZ
             4'b1011: control_signal = 4'b1101; // BLTZ
+            default: control_signal = 4'b1111; // Default
         endcase
     end
 endmodule
