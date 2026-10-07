@@ -40,16 +40,16 @@ module InstructionMemory(Address, Instruction);
 
     input [31:0] Address;       // Input Address
 
-    reg [127:0][31:0] Memory;
+    reg [31:0] Memory [127:0];
     integer i;
 
     output reg [31:0] Instruction;    // Instruction at memory location Address
-    initial begin
-        for (i = 0, i < 128, i = i + 1) begin
+    always @(*) begin
+        for (i = 0; i < 128; i = i + 1) begin
             Memory[i] <= i * 3;
         end
     end
-    initial begin
+    always @(*) begin
         output<= Memory[Address[8:2]];
     end
 

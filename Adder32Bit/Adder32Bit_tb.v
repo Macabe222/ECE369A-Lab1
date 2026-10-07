@@ -2,7 +2,8 @@
 
 module Adder32Bit_tb();
 
-    reg [31:0] input1, input2, result;
+    reg [31:0] input1, input2;
+    wire [31:0] result;
     Adder32Bit u0(.input1(input1), .input2(input2), .result(result));
 
     initial begin

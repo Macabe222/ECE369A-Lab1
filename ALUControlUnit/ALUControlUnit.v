@@ -1,7 +1,7 @@
-~timescale 1ns/1ps
+`timescale 1ns/1ps
 
-module ALUControl(ALUOp, function);
-    input [5:0] function;
+module ALUControlUnit(ALUOp, funct, control_signal);
+    input [5:0] funct;
     input [3:0] ALUOp;
 
     output reg [3:0] control_signal;
@@ -11,7 +11,7 @@ module ALUControl(ALUOp, function);
             4'b0000: control_signal = 4'b0000; // Memory and ADDi
             4'b0001: control_signal = 4'b0001; // Branch
             4'b0010: // R-type
-            case (function)
+            case (funct)
                 6'b100000: control_signal = 4'b0000; // ADD
                 6'b100010: control_signal = 4'b0001; // SUB
                 6'b100100: control_signal = 4'b0011; // AND

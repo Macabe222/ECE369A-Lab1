@@ -45,7 +45,7 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, ReadData);
 
     output reg[31:0] ReadData; // Contents of memory location at Address
 
-    reg [31:0] DataMemory[0:1023];
+    reg [31:0] DataMemory [0:1023];
 
     always @(posedge Clk) begin
         if (MemWrite) begin
