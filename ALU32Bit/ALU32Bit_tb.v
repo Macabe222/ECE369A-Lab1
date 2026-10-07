@@ -78,12 +78,6 @@ module ALU32Bit_tb();
 		B = 32'd5;
 		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero);
 
-        // Bitwise NAND 32d'11 32d'2 ALUResult should be 32h'FFFFFFFD
-		#100 ALUControl = 4'b1000;
-		A = 32'd2;
-		B = 32'd5;
-		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero);
-
 		// Shift Right Logical 32d'4 32d'2 ALUResult should be 1
 		#100 ALUControl = 4'b1001;
 		A = 32'd4;
@@ -91,7 +85,7 @@ module ALU32Bit_tb();
 		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero);
 
 		// Shift Left Logical 32d'4 32d'2 ALUResult should be 16
-		#100 ALUControl = 4'b1010;
+		#100 ALUControl = 4'b1000;
 		A = 32'd4;
 		B = 32'd2;
 		#20 $display("ALUControl=%h, A=%h, B=%h, ALUResult=%h, Zero=%h", ALUControl, A, B, ALUResult, Zero);
