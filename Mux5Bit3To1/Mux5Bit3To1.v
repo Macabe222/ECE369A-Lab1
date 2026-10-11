@@ -13,6 +13,7 @@ module Mux5Bit3To1(out, inA, inB, inC, sel);
 
     input [4:0] inA;
     input [4:0] inB;
+    input [4:0] inC;
     input [1:0] sel;
 
     always @(*) begin

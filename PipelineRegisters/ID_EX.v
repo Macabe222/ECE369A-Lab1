@@ -2,21 +2,23 @@
 
 module ID_EX(
     RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, MemRead, MemWrite, MemSize, Branch,
-    ReadData1, ReadData2, PCPlusFour, Immediate, PotWriteReg1, PotWriteReg2, Clk,
+    ReadData1, ReadData2, PCPlusFour, Immediate, PotWriteReg1, PotWriteReg2, Shamt, Clk,
     outRegWrite, outALUSrc, outALUOp, outRegDst, outMemToReg, outMemRead, outMemWrite,
     outMemSize, outBranch, outReadData1, outReadData2, outPCPlusFour, outImmediate,
-    outPotWriteReg1, outPotWriteReg2
+    outPotWriteReg1, outPotWriteReg2, outShamt;
 );
     input RegWrite, ALUSrc, MemRead, MemWrite, Branch, Clk;
     input [1:0] RegDst, MemToReg, MemSize;
     input [3:0] ALUOp;
-    input [5:0] PotWriteReg1, PotWriteReg2;
+    input [4:0] PotWriteReg1, PotWriteReg2;
+    input [5:0] Shamt;
     input [31:0] ReadData1, ReadData2, PCPlusFour, Immediate;
 
     output reg outRegWrite, outALUSrc, outMemRead, outMemWrite, outBranch;
     output reg [1:0] outRegDst, outMemToReg, outMemSize;
     output reg [3:0] outALUOp;
     output reg [4:0] outPotWriteReg1, outPotWriteReg2;
+    output reg [5:0] outShamt;
     output reg [31:0] outReadData1, outReadData2, outPCPlusFour, outImmediate;
 
     always @(posedge Clk) begin
@@ -38,5 +40,6 @@ module ID_EX(
         outImmediate <= Immediate;
         outPotWriteReg1 <= PotWriteReg1;
         outPotWriteReg2 <= PotWriteReg2;
+        outShamt <= Shamt;
     end
 endmodule

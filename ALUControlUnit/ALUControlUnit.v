@@ -9,7 +9,7 @@ module ALUControlUnit(ALUOp, funct, control_signal);
     always @(*) begin
         case (ALUOp)
             4'b0000: control_signal = 4'b0000; // Memory and ADDi
-            4'b0001: control_signal = 4'b0001; // Branch
+            4'b0001: control_signal = 4'b0001; // BEQ
             4'b0010: // R-type
             case (funct)
                 6'b100000: control_signal = 4'b0000; // ADD
@@ -32,6 +32,7 @@ module ALUControlUnit(ALUOp, funct, control_signal);
             4'b1001: control_signal = 4'b1011; // BGTZ
             4'b1010: control_signal = 4'b1100; // BLEZ
             4'b1011: control_signal = 4'b1101; // BLTZ
+            4'b1100: control_signal = 4'b1110; // BNE
             default: control_signal = 4'b1111; // Default
         endcase
     end
