@@ -2,14 +2,14 @@
 
 module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRead, MemWrite, Branch, MemSize, JumpReg, Jump);
     input reg [31:0] Instruction;
-    output reg RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRead, MemWrite, Branch, MemSize;
+    output reg RegWrite, ALUSrc, ALUOp, MemRead, MemWrite, Branch;
+    output reg [1:0] MemToReg, MemSize, RegDst;
 
     reg OpCode;
     reg FuncCode;
 
     always @ (*) begin
         OpCode = Instruction[31:26];
-        FuncCode = Instruction[5:0];
         MemSize = 2'b00;
         case (OpCode)
             6'b000000 begin // R-type instructions
@@ -17,7 +17,7 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 MemWrite = 0;
                 MemRead = 0;
                 RegDst = 2'b01;
-                MemToReg = 1;
+                MemToReg = 2'b01;
                 Branch = 0;
                 ALUSrc = 0;
                 ALUOp = 4'b0010
@@ -30,11 +30,14 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 MemRead = 0;
                 RegDst = 2'b00;
                 ALUSrc = 0;
-                MemToReg = 0;
+                MemToReg = 2'b00;
                 Branch = 1;
-                ALUOp = 4'b0001;
                 JumpReg = 0;
                 Jump = 0;
+                case (Instruction[20:16]) // BGEZ
+                    5'b00001: ALUOp = 4'b1000;
+                    5'b00000: ALUop = 4'b1100;
+                endcase
             end
             6'b000010 begin // J
                 RegWrite = 0;
