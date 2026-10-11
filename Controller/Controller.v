@@ -38,6 +38,10 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 case (Instruction[20:16])
                     5'b00001: ALUOp = 4'b1000; // BGEZ
                     5'b00000: ALUOp = 4'b1011; // BLTZ
+                    default: begin // Unknown
+                        ALUOp = 4'b0000;
+                        Branch = 0;
+                    end
                 endcase
             end
             6'b000010: begin // J
@@ -262,6 +266,18 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 MemSize = 2'b10;
+            end
+            default: begin // Unknown opcode
+                RegWrite = 0;
+                MemWrite = 0;
+                MemRead  = 0;
+                Branch   = 0;
+                Jump     = 0;
+                JumpReg  = 0;
+                RegDst   = 2'b00;
+                ALUSrc   = 0;
+                MemToReg = 2'b00;
+                ALUOp    = 4'b0000;
             end
         endcase
 

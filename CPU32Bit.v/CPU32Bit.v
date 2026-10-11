@@ -43,7 +43,7 @@ module CPU32Bit(unDivClk, Rst);
 
     ID_EX u1(
         ID_RegWrite, ID_ALUSrc, ID_ALUOp, ID_RegDst, ID_MemToReg, ID_MemRead, ID_MemWrite, ID_MemSize, ID_Branch,
-        ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[20:16], ID_Instruction[15:11], ID_Shamt Clk,
+        ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[20:16], ID_Instruction[15:11], ID_Instruction[10:6], Clk,
         EX_RegWrite, EX_ALUSrc, EX_ALUOp, EX_RegDst, EX_MemToReg, EX_MemRead, EX_MemWrite,
         EX_MemSize, EX_Branch, EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate,
         EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt

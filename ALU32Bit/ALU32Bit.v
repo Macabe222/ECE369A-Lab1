@@ -83,7 +83,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
             default: ALUResult = 0;
             4'b1110: begin // BNE
                 if (A != B) begin
-                    ALUResult = 32d'0;
+                    ALUResult = 32'd0;
                 end
                 else begin
                     ALUResult = 32'd1;
