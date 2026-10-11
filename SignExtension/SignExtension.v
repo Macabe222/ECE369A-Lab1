@@ -14,6 +14,6 @@ module SignExtension(in, out, ExtOp);
     /* A 32-Bit output word */
     output [31:0] out;
 
-    assign out = ExtOp ? {16'b0, in}, {{16{in[15]}}, in};
+    assign out = ExtOp ? {16'b0, in} : {{16{in[15]}}, in};
 
 endmodule

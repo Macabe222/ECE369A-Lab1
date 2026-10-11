@@ -14,7 +14,6 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
         ExtOp = 0;
         case (OpCode)
             6'b000000: begin // R-type instructions
-                RegWrite = 1;
                 MemWrite = 0;
                 MemRead = 0;
                 RegDst = 2'b01;
@@ -23,6 +22,7 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUSrc = 0;
                 ALUOp = 4'b0010;
                 JumpReg = (Instruction[5:0] == 6'b001000);
+                RegWrite = !JumpReg;
                 Jump = 0;
             end
             6'b000001: begin // BGEZ, BLTZ
@@ -35,9 +35,9 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 Branch = 1;
                 JumpReg = 0;
                 Jump = 0;
-                case (Instruction[20:16]) // BGEZ
-                    5'b00001: ALUOp = 4'b1000;
-                    5'b00000: ALUOp = 4'b1100;
+                case (Instruction[20:16])
+                    5'b00001: ALUOp = 4'b1000; // BGEZ
+                    5'b00000: ALUOp = 4'b1011; // BLTZ
                 endcase
             end
             6'b000010: begin // J
@@ -181,7 +181,7 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 MemRead = 0;
                 RegDst = 2'b01;
                 ALUSrc = 0;
-                MemToReg = 2'b00;
+                MemToReg = 2'b01;
                 Branch = 0;
                 ALUOp = 4'b0111;
                 JumpReg = 0;

@@ -14,11 +14,10 @@ module CPU32Bit(unDivClk, Rst);
     wire [1:0] WB_MemToReg;
     wire [3:0] ID_ALUOp;
     wire [3:0] EX_ALUOp, EX_ALUControlSignal;
-    wire [4:0] EX_WriteReg, EX_PotWriteReg1, EX_PotWriteReg2;
+    wire [4:0] ID_Shamt;
+    wire [4:0] EX_WriteReg, EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt;
     wire [4:0] MEM_WriteReg;
     wire [4:0] WB_WriteReg;
-    wire [5:0] ID_Shamt;
-    wire [5:0] EX_Shamt;
     wire [31:0] Address, Instruction, PCPlusFour, PCInput, JumpAddress, MuxOneOut, MuxTwoOut, JumpShifted;
     wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate;
     wire [31:0] EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate, EX_AddResult, EX_AddIn, EX_ALUIn, EX_ALUResult;
@@ -44,10 +43,10 @@ module CPU32Bit(unDivClk, Rst);
 
     ID_EX u1(
         ID_RegWrite, ID_ALUSrc, ID_ALUOp, ID_RegDst, ID_MemToReg, ID_MemRead, ID_MemWrite, ID_MemSize, ID_Branch,
-        ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[20:16], ID_Instruction[15:11], Clk,
+        ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[20:16], ID_Instruction[15:11], ID_Shamt Clk,
         EX_RegWrite, EX_ALUSrc, EX_ALUOp, EX_RegDst, EX_MemToReg, EX_MemRead, EX_MemWrite,
         EX_MemSize, EX_Branch, EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate,
-        EX_PotWriteReg1, EX_PotWriteReg2
+        EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt
     );
 
     ShiftLeftTwo u14(EX_Immediate, EX_AddIn);

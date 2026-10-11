@@ -30,7 +30,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
 
 	input [3:0] ALUControl; // control bits for ALU operation
                                 // you need to adjust the bitwidth as needed
-    input [5:0] Shamt; // Shift Amount
+    input [4:0] Shamt; // Shift Amount
 	input signed [31:0] A, B;	    // inputs
 
 	output reg [31:0] ALUResult;	// answer
@@ -46,48 +46,49 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
             4'b0101: ALUResult = (A < B) ? 32'd1 : 32'd0; // Set on less than
             4'b0110: ALUResult = A ^ B; // Bitwise XOR
             4'b0111: ALUResult = ~(A | B); // Bitwise NOR
-            4'b1000: ALUResult = A << Shamt; // Shift left logical
-            4'b1001: ALUResult = A >> Shamt; // Shift right logical
+            4'b1000: ALUResult = B << Shamt; // Shift left logical
+            4'b1001: ALUResult = B >> Shamt; // Shift right logical
             4'b1010: begin // BGEZ
                 if (A >= 0) begin
-                    ALUResult = 64'd0;
+                    ALUResult = 32'd0;
                 end
                 else begin
-                    ALUResult = 64'd1;
+                    ALUResult = 32'd1;
                 end
             end
             4'b1011: begin // BGTZ
                 if (A > 0) begin
-                    ALUResult = 64'd0;
+                    ALUResult = 32'd0;
                 end
                 else begin
-                    ALUResult = 64'd1;
+                    ALUResult = 32'd1;
                 end
             end
             4'b1100: begin // BLEZ
                 if (A <= 0) begin
-                    ALUResult = 64'd0;
+                    ALUResult = 32'd0;
                 end
                 else begin
-                    ALUResult = 64'd1;
+                    ALUResult = 32'd1;
                 end
             end
-            4'b1101: begin BLTZ
+            4'b1101: begin // BLTZ
                 if (A < 0) begin
-                    ALUResult = 64'd0;
+                    ALUResult = 32'd0;
                 end
                 else begin
-                    ALUResult = 64'd1;
+                    ALUResult = 32'd1;
                 end
             end
             default: ALUResult = 0;
             4'b1110: begin // BNE
                 if (A != B) begin
-                    ALUResult = 6d'0;
+                    ALUResult = 32d'0;
                 end
                 else begin
-                    ALUResult = 64'd1;
+                    ALUResult = 32'd1;
                 end
+            end
         endcase
 
         Zero = (ALUResult == 32'd0);
