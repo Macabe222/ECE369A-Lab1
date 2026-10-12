@@ -16,7 +16,7 @@ module MEM_WB(
 
     // Initialize register contents
     initial begin
-        outRegWrite = 0; outMemToReg = 2'd0; outWriteRegg = 5'd0; outReadData = 32'd0;
+        outRegWrite = 0; outMemToReg = 2'd0; outWriteReg = 5'd0; outReadData = 32'd0;
         outALUResult = 32'd0; outPCPlusFour = 32'd0;
     end
 
