@@ -1,9 +1,8 @@
 `timescale 1ns/1ps
 
-module CPU32Bit(unDivClk, Rst);
-    input unDivClk, Rst;
+module CPU32Bit(Clk, Rst, outWriteData, outPC);
+    input Clk, Rst;
 
-    wire Clk;
     wire ID_Jump, ID_JumpReg, ID_RegWrite, ID_ALUSrc, ID_MemRead, ID_MemWrite, ID_Branch, ID_ExtOp;
     wire EX_RegWrite, EX_ALUSrc, EX_MemRead, EX_MemWrite, EX_Branch, EX_Zero;
     wire MEM_Branch, MEM_MemWrite, MEM_MemRead, MEM_RegWrite, MEM_PCSrc, MEM_Zero;
@@ -24,7 +23,7 @@ module CPU32Bit(unDivClk, Rst);
     wire [31:0] MEM_AddResult, MEM_ReadData2, MEM_ALUResult, MEM_PCPlusFour, MEM_MemReadData;
     wire [31:0] WB_MemReadData, WB_ALUResult, WB_PCPlusFour, WB_WriteData;
 
-    ClkDiv u22(unDivClk, Rst, Clk);
+    output [31:0] outWriteData, outPC;
 
     InstructionMemory u4(Address, Instruction);
     ProgramCounter u5(PCInput, Address, Rst, Clk);
@@ -72,5 +71,7 @@ module CPU32Bit(unDivClk, Rst);
     );
 
     Mux32Bit3To1 u21(WB_WriteData, WB_MemReadData, WB_ALUResult, WB_PCPlusFour, WB_MemToReg);
+    assign outWriteData = WB_WriteData;
+    assign outPC = WB_PCPlusFour - 32'd4;
 
 endmodule

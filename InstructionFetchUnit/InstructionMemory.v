@@ -47,6 +47,7 @@ module InstructionMemory(Address, Instruction);
 
     // Initialize instruction memory
     initial begin
+        $readmemh("instruction_memory.mem", Memory);
         for (i = 0; i < 128; i = i + 1) begin
             Memory[i] = 32'd0;
         end
