@@ -48,6 +48,14 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, MemSize, ReadData)
 
     reg [31:0] DataMemory [0:1023];
 
+    // Initialize data memory to 0
+    integer i;
+    initial begin
+        for (i = 0; i < 1024; i = i + 1) begin
+            DataMemory[i] = 32'd0;
+        end
+    end
+
     // Store path
     always @(posedge Clk) begin
         if (MemWrite) begin

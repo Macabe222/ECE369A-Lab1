@@ -16,6 +16,14 @@ module EX_MEM(
     output reg [4:0] outWriteReg;
     output reg [31:0] outAddResult, outReadData2, outALUResult, outPCPlusFour;
 
+    // Initialize register contents
+    initial begin
+        outBranch = 0; outMemWrite = 0; outMemRead = 0; outRegWrite = 0; outZero = 0;
+        outMemSize = 2'd0; outMemToReg = 2'd0; outWriteReg = 5'd0; outAddResult = 32'd0;
+        outReadData2 = 32'd0; outALUResult = 32'd0; outPCPlusFour = 32'd0;
+    end
+
+    // Update at rising clock edge
     always @(posedge Clk) begin
         // Control Signals
         outBranch <= Branch;

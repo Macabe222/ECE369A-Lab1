@@ -44,11 +44,14 @@ module InstructionMemory(Address, Instruction);
     integer i;
 
     output reg [31:0] Instruction;    // Instruction at memory location Address
+
+    // Initialize instruction memory
     initial begin
         for (i = 0; i < 128; i = i + 1) begin
-            Memory[i] = i * 3;
+            Memory[i] = 32'd0;
         end
     end
+
     always @(*) begin
         Instruction = Memory[Address[8:2]];
     end

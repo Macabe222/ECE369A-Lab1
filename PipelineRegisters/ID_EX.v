@@ -19,6 +19,15 @@ module ID_EX(
     output reg [4:0] outPotWriteReg1, outPotWriteReg2, outShamt;
     output reg [31:0] outReadData1, outReadData2, outPCPlusFour, outImmediate;
 
+    // Initialize register contents
+    initial begin
+        outRegWrite = 0; outALUSrc = 0; outMemRead = 0; outMemWrite = 0; outBranch = 0;
+        outRegDst = 2'd0; outMemToReg = 2'd0; outMemSize = 2'd0; outALUOp = 2'd0;
+        outPotWriteReg1 = 5'd0; outPotWriteReg2 = 5'd0; outShamt = 5'd0; outReadData1 = 32'd0;
+        outReadData2 = 32'd0; outPCPlusFour = 32'd0; outImmediate = 32'd0;
+    end
+
+    // Update at rising clock edge
     always @(posedge Clk) begin
         // Control Signals
         outRegWrite <= RegWrite;

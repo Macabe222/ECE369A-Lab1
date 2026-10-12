@@ -64,6 +64,14 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
     // 32 registers, each 32 bits wide
     reg [31:0] registers [0:31];
 
+    // Initialize registers to 0
+    integer i;
+    initial begin
+        for (i = 0; i < 32; i = i + 1) registers[i] = 32'h0;
+        ReadData1 = 32'h0;
+        ReadData2 = 32'h0;
+        Registers[29] = 32'd4092; // Stack pointer
+    end
 
     // Write to register file on rising edge
     always @(posedge Clk) begin

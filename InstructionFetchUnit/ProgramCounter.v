@@ -15,12 +15,12 @@
 // PCResult: 32-Bit registered output port.
 //
 // FUNCTIONALITY:-
-// Design a program counter register that holds the current address of the 
-// instruction memory.  This module should be updated at the positive edge of 
-// the clock. The contents of a register default to unknown values or 'X' upon 
-// instantiation in your module.  
-// You need to enable global reset of your datapath to point 
-// to the first instruction in your instruction memory (i.e., the first address 
+// Design a program counter register that holds the current address of the
+// instruction memory.  This module should be updated at the positive edge of
+// the clock. The contents of a register default to unknown values or 'X' upon
+// instantiation in your module.
+// You need to enable global reset of your datapath to point
+// to the first instruction in your instruction memory (i.e., the first address
 // location, 0x00000000H).
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -31,8 +31,8 @@ module ProgramCounter(Address, PCResult, Reset, Clk);
 
 	output reg [31:0] PCResult;
 
-    always @(posedge Clk) begin
-        if (Reset == 1)begin 
+    always @(posedge Clk or posedge Reset) begin
+        if (Reset == 1)begin
             PCResult <= 32'h00000000;
         end
         else begin
@@ -41,4 +41,3 @@ module ProgramCounter(Address, PCResult, Reset, Clk);
     end
 
 endmodule
-
