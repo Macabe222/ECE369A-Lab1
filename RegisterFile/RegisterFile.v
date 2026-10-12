@@ -70,7 +70,7 @@ module RegisterFile(ReadRegister1, ReadRegister2, WriteRegister, WriteData, RegW
         for (i = 0; i < 32; i = i + 1) registers[i] = 32'h0;
         ReadData1 = 32'h0;
         ReadData2 = 32'h0;
-        Registers[29] = 32'd4092; // Stack pointer
+        registers[29] = 32'd4092; // Stack pointer
     end
 
     // Write to register file on rising edge
