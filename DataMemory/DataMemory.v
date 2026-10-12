@@ -51,7 +51,6 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, MemSize, ReadData)
     // Initialize data memory to 0
     integer i;
     initial begin
-        $readmemh("data_memory.h", DataMemory)
         for (i = 0; i < 1024; i = i + 1) begin
             DataMemory[i] = 32'd0;
         end
