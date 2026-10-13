@@ -15,64 +15,13 @@ module CPU32Bit_tb();
 
     initial begin
         #250 Rst = 0;
+        #1000 $finish;
+    end
 
-        wait (outPC == 32'd0);
-        @(negedge Clk);
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-        $display("Write data: %h, PC: %h", outWriteData, outPC);
-        // NOP
-        repeat (6) @(negedge Clk);
-
-    $finish;
+    always @(negedge Clk) begin
+        if (!Rst && u1.WB_RegWrite && u1.WB_WriteReg != 0) begin
+            $display("PC: %h, WriteData: %h", outPC, outWriteData);
+        end
     end
 
 endmodule
