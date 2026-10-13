@@ -20,7 +20,7 @@ module CPU32Bit_tb();
 
     always @(negedge Clk) begin
         if (!Rst && u1.WB_RegWrite && u1.WB_WriteReg != 0) begin
-            $display("PC: %h, WriteData: %h", outPC, outWriteData);
+            $display("PC: %d, WriteData: %d", outPC, outWriteData);
         end
     end
 
