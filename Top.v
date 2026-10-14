@@ -4,16 +4,10 @@
 module Top();
     reg Clk;
     reg Reset;
-    wire [15:0] instruct;
-    wire [15:0] Result;
-    wire [31:0] Instruction;
-    wire [31:0] PCResult;
+
+    wire [31:0] PC, WriteData
     wire ClkOut;
-    ClkDiv(Clk, 0, ClkOut);
-    InstructionFetchUnit(Instruction, PCResult, Reset, ClkOut);
-    assign instruct = Instruction[15:0];
-    assign Result = PCResult[15:0];
-    Two4DigitDisplay(Clk, instruct, Result, out7, en_out);
-   
-   
+    ClkDiv u0(Clk, 0, ClkOut);
+    CPU32Bit u1(ClkOut, Reset, WriteData, PC);
+    Two4DigitDisplay u2(Clk, PC, WriteData, out7, en_out);
 endmodule
