@@ -17,13 +17,14 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     wire [4:0] EX_WriteReg, EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt;
     wire [4:0] MEM_WriteReg;
     wire [4:0] WB_WriteReg;
-    wire [31:0] Address, Instruction, PCPlusFour, PCInput, JumpAddress, MuxOneOut, MuxTwoOut, JumpShifted, outInstruction;
+    wire [31:0] Address, Instruction, PCPlusFour, PCInput, JumpAddress, MuxOneOut, MuxTwoOut, JumpShifted;
     wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate;
     wire [31:0] EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate, EX_AddResult, EX_AddIn, EX_ALUIn, EX_ALUResult;
     wire [31:0] MEM_AddResult, MEM_ReadData2, MEM_ALUResult, MEM_PCPlusFour, MEM_MemReadData;
     wire [31:0] WB_MemReadData, WB_ALUResult, WB_PCPlusFour, WB_WriteData;
+    reg [31:0] EX_Instruction, MEM_Instruction, WB_Instruction;
 
-    output [31:0] outWriteData, outPC;
+    output [31:0] outWriteData, outPC, outInstruction;
 
     InstructionMemory u4(Address, Instruction);
     ProgramCounter u5(PCInput, Address, Rst, Clk);
@@ -73,6 +74,13 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     Mux32Bit3To1 u21(WB_WriteData, WB_MemReadData, WB_ALUResult, WB_PCPlusFour, WB_MemToReg);
     assign outWriteData = WB_WriteData;
     assign outPC = WB_PCPlusFour - 32'd4;
-    assign outInstruction = Instruction;
+
+    always @(posedge Clk) begin
+        EX_Instruction <= ID_Instruction;
+        MEM_Instruction <= EX_Instruction;
+        WB_Instruction <= MEM_Instruction;
+    end
+
+    assign outInstruction = WB_Instruction;
 
 endmodule
