@@ -1,0 +1,377 @@
+# run 1000ns
+EXEC [ADD positive] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [ADD positive] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [ADD positive] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [ADD positive] PC=96 (0x00000060) OP=add REG=$10 RESULT=16 (0x00000010)
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'CPU32Bit_all_instructions_tb_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for 1000ns
+run all
+PASS [ADD positive] destination $t2 = 00000010
+PASS [ADD positive] $zero preserved = 00000000
+EXEC [ADD signed] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-10 (0xfffffff6)
+EXEC [ADD signed] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [ADD signed] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [ADD signed] PC=96 (0x00000060) OP=add REG=$10 RESULT=-4 (0xfffffffc)
+PASS [ADD signed] destination $t2 = fffffffc
+PASS [ADD signed] $zero preserved = 00000000
+EXEC [SUB negative] PC=24 (0x00000018) OP=addi REG=$8 RESULT=6 (0x00000006)
+EXEC [SUB negative] PC=48 (0x00000030) OP=addi REG=$9 RESULT=10 (0x0000000a)
+EXEC [SUB negative] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SUB negative] PC=96 (0x00000060) OP=sub REG=$10 RESULT=-4 (0xfffffffc)
+PASS [SUB negative] destination $t2 = fffffffc
+PASS [SUB negative] $zero preserved = 00000000
+EXEC [SUB zero] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [SUB zero] PC=48 (0x00000030) OP=addi REG=$9 RESULT=10 (0x0000000a)
+EXEC [SUB zero] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SUB zero] PC=96 (0x00000060) OP=sub REG=$10 RESULT=0 (0x00000000)
+PASS [SUB zero] destination $t2 = 00000000
+PASS [SUB zero] $zero preserved = 00000000
+EXEC [AND] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [AND] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [AND] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [AND] PC=96 (0x00000060) OP=and REG=$10 RESULT=2 (0x00000002)
+PASS [AND] destination $t2 = 00000002
+PASS [AND] $zero preserved = 00000000
+EXEC [OR] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [OR] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [OR] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [OR] PC=96 (0x00000060) OP=or REG=$10 RESULT=14 (0x0000000e)
+PASS [OR] destination $t2 = 0000000e
+PASS [OR] $zero preserved = 00000000
+EXEC [XOR] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [XOR] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [XOR] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [XOR] PC=96 (0x00000060) OP=xor REG=$10 RESULT=12 (0x0000000c)
+PASS [XOR] destination $t2 = 0000000c
+PASS [XOR] $zero preserved = 00000000
+EXEC [NOR] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [NOR] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [NOR] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [NOR] PC=96 (0x00000060) OP=nor REG=$10 RESULT=-15 (0xfffffff1)
+PASS [NOR] destination $t2 = fffffff1
+PASS [NOR] $zero preserved = 00000000
+EXEC [SLT signed true] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SLT signed true] PC=48 (0x00000030) OP=addi REG=$9 RESULT=1 (0x00000001)
+EXEC [SLT signed true] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLT signed true] PC=96 (0x00000060) OP=slt REG=$10 RESULT=1 (0x00000001)
+PASS [SLT signed true] destination $t2 = 00000001
+PASS [SLT signed true] $zero preserved = 00000000
+EXEC [SLT signed false] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [SLT signed false] PC=48 (0x00000030) OP=addi REG=$9 RESULT=-1 (0xffffffff)
+EXEC [SLT signed false] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLT signed false] PC=96 (0x00000060) OP=slt REG=$10 RESULT=0 (0x00000000)
+PASS [SLT signed false] destination $t2 = 00000000
+PASS [SLT signed false] $zero preserved = 00000000
+EXEC [SLT equal] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SLT equal] PC=48 (0x00000030) OP=addi REG=$9 RESULT=-1 (0xffffffff)
+EXEC [SLT equal] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLT equal] PC=96 (0x00000060) OP=slt REG=$10 RESULT=0 (0x00000000)
+PASS [SLT equal] destination $t2 = 00000000
+PASS [SLT equal] $zero preserved = 00000000
+EXEC [MUL positive] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [MUL positive] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [MUL positive] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [MUL positive] PC=96 (0x00000060) OP=mul REG=$10 RESULT=60 (0x0000003c)
+PASS [MUL positive] destination $t2 = 0000003c
+PASS [MUL positive] $zero preserved = 00000000
+EXEC [MUL signed] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-10 (0xfffffff6)
+EXEC [MUL signed] PC=48 (0x00000030) OP=addi REG=$9 RESULT=6 (0x00000006)
+EXEC [MUL signed] PC=72 (0x00000048) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [MUL signed] PC=96 (0x00000060) OP=mul REG=$10 RESULT=-60 (0xffffffc4)
+PASS [MUL signed] destination $t2 = ffffffc4
+PASS [MUL signed] $zero preserved = 00000000
+EXEC [ADDI negative] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [ADDI negative] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [ADDI negative] PC=72 (0x00000048) OP=addi REG=$10 RESULT=-2 (0xfffffffe)
+PASS [ADDI negative] destination $t2 = fffffffe
+EXEC [ADDI sign bit] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [ADDI sign bit] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [ADDI sign bit] PC=72 (0x00000048) OP=addi REG=$10 RESULT=-32768 (0xffff8000)
+PASS [ADDI sign bit] destination $t2 = ffff8000
+EXEC [ANDI zero extension] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [ANDI zero extension] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [ANDI zero extension] PC=72 (0x00000048) OP=andi REG=$10 RESULT=32768 (0x00008000)
+PASS [ANDI zero extension] destination $t2 = 00008000
+EXEC [ORI zero extension] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [ORI zero extension] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [ORI zero extension] PC=72 (0x00000048) OP=ori REG=$10 RESULT=65535 (0x0000ffff)
+PASS [ORI zero extension] destination $t2 = 0000ffff
+EXEC [XORI zero extension] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [XORI zero extension] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [XORI zero extension] PC=72 (0x00000048) OP=xori REG=$10 RESULT=-65536 (0xffff0000)
+PASS [XORI zero extension] destination $t2 = ffff0000
+EXEC [SLTI negative true] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-2 (0xfffffffe)
+EXEC [SLTI negative true] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLTI negative true] PC=72 (0x00000048) OP=slti REG=$10 RESULT=1 (0x00000001)
+PASS [SLTI negative true] destination $t2 = 00000001
+EXEC [SLTI negative false] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [SLTI negative false] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLTI negative false] PC=72 (0x00000048) OP=slti REG=$10 RESULT=0 (0x00000000)
+PASS [SLTI negative false] destination $t2 = 00000000
+EXEC [SLTI equal] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SLTI equal] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLTI equal] PC=72 (0x00000048) OP=slti REG=$10 RESULT=0 (0x00000000)
+PASS [SLTI equal] destination $t2 = 00000000
+EXEC [SLL] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [SLL] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLL] PC=72 (0x00000048) OP=sll REG=$10 RESULT=80 (0x00000050)
+PASS [SLL] shift result = 00000050
+EXEC [SLL shamt 31] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [SLL shamt 31] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLL shamt 31] PC=72 (0x00000048) OP=sll REG=$10 RESULT=-2147483648 (0x80000000)
+PASS [SLL shamt 31] shift result = 80000000
+EXEC [SLL shamt 0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SLL shamt 0] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SLL shamt 0] PC=72 (0x00000048) OP=sll REG=$10 RESULT=-1 (0xffffffff)
+PASS [SLL shamt 0] shift result = ffffffff
+EXEC [SRL] PC=24 (0x00000018) OP=addi REG=$8 RESULT=10 (0x0000000a)
+EXEC [SRL] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SRL] PC=72 (0x00000048) OP=srl REG=$10 RESULT=5 (0x00000005)
+PASS [SRL] shift result = 00000005
+EXEC [SRL logical sign bit] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SRL logical sign bit] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SRL logical sign bit] PC=72 (0x00000048) OP=srl REG=$10 RESULT=2147483647 (0x7fffffff)
+PASS [SRL logical sign bit] shift result = 7fffffff
+EXEC [SRL shamt 31] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SRL shamt 31] PC=48 (0x00000030) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SRL shamt 31] PC=72 (0x00000048) OP=srl REG=$10 RESULT=1 (0x00000001)
+PASS [SRL shamt 31] shift result = 00000001
+EXEC [SW LW and negative address offset] PC=24 (0x00000018) OP=addi REG=$8 RESULT=16 (0x00000010)
+EXEC [SW LW and negative address offset] PC=48 (0x00000030) OP=addi REG=$9 RESULT=-123 (0xffffff85)
+EXEC [SW LW and negative address offset] PC=72 (0x00000048) OP=sw REG=none RESULT=0 (0x00000000)
+EXEC [SW LW and negative address offset] PC=96 (0x00000060) OP=addi REG=$10 RESULT=123 (0x0000007b)
+EXEC [SW LW and negative address offset] PC=120 (0x00000078) OP=lw REG=$10 RESULT=-123 (0xffffff85)
+PASS [SW LW and negative address offset] stored word = ffffff85
+PASS [SW LW and negative address offset] loaded word = ffffff85
+EXEC [SB LB byte lane 0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SB LB byte lane 0] PC=48 (0x00000030) OP=sw REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 0] PC=72 (0x00000048) OP=addi REG=$9 RESULT=128 (0x00000080)
+EXEC [SB LB byte lane 0] PC=96 (0x00000060) OP=sb REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 0] PC=120 (0x00000078) OP=lb REG=$10 RESULT=-128 (0xffffff80)
+EXEC [SB LB byte lane 0] PC=144 (0x00000090) OP=lw REG=$11 RESULT=-128 (0xffffff80)
+PASS [SB LB byte lane 0] LB sign extension = ffffff80
+PASS [SB LB byte lane 0] SB preserves other lanes = ffffff80
+EXEC [SB LB byte lane 1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SB LB byte lane 1] PC=48 (0x00000030) OP=sw REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 1] PC=72 (0x00000048) OP=addi REG=$9 RESULT=128 (0x00000080)
+EXEC [SB LB byte lane 1] PC=96 (0x00000060) OP=sb REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 1] PC=120 (0x00000078) OP=lb REG=$10 RESULT=-128 (0xffffff80)
+EXEC [SB LB byte lane 1] PC=144 (0x00000090) OP=lw REG=$11 RESULT=-32513 (0xffff80ff)
+PASS [SB LB byte lane 1] LB sign extension = ffffff80
+PASS [SB LB byte lane 1] SB preserves other lanes = ffff80ff
+EXEC [SB LB byte lane 2] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SB LB byte lane 2] PC=48 (0x00000030) OP=sw REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 2] PC=72 (0x00000048) OP=addi REG=$9 RESULT=128 (0x00000080)
+EXEC [SB LB byte lane 2] PC=96 (0x00000060) OP=sb REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 2] PC=120 (0x00000078) OP=lb REG=$10 RESULT=-128 (0xffffff80)
+EXEC [SB LB byte lane 2] PC=144 (0x00000090) OP=lw REG=$11 RESULT=-8323073 (0xff80ffff)
+PASS [SB LB byte lane 2] LB sign extension = ffffff80
+PASS [SB LB byte lane 2] SB preserves other lanes = ff80ffff
+EXEC [SB LB byte lane 3] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SB LB byte lane 3] PC=48 (0x00000030) OP=sw REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 3] PC=72 (0x00000048) OP=addi REG=$9 RESULT=128 (0x00000080)
+EXEC [SB LB byte lane 3] PC=96 (0x00000060) OP=sb REG=none RESULT=0 (0x00000000)
+EXEC [SB LB byte lane 3] PC=120 (0x00000078) OP=lb REG=$10 RESULT=-128 (0xffffff80)
+EXEC [SB LB byte lane 3] PC=144 (0x00000090) OP=lw REG=$11 RESULT=-2130706433 (0x80ffffff)
+PASS [SB LB byte lane 3] LB sign extension = ffffff80
+PASS [SB LB byte lane 3] SB preserves other lanes = 80ffffff
+EXEC [SH LH halfword lane 0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SH LH halfword lane 0] PC=48 (0x00000030) OP=sw REG=none RESULT=0 (0x00000000)
+EXEC [SH LH halfword lane 0] PC=72 (0x00000048) OP=addi REG=$9 RESULT=-32768 (0xffff8000)
+EXEC [SH LH halfword lane 0] PC=96 (0x00000060) OP=sh REG=none RESULT=0 (0x00000000)
+EXEC [SH LH halfword lane 0] PC=120 (0x00000078) OP=lh REG=$10 RESULT=-32768 (0xffff8000)
+EXEC [SH LH halfword lane 0] PC=144 (0x00000090) OP=lw REG=$11 RESULT=-32768 (0xffff8000)
+PASS [SH LH halfword lane 0] LH sign extension = ffff8000
+PASS [SH LH halfword lane 0] SH preserves other half = ffff8000
+EXEC [SH LH halfword lane 1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [SH LH halfword lane 1] PC=48 (0x00000030) OP=sw REG=none RESULT=0 (0x00000000)
+EXEC [SH LH halfword lane 1] PC=72 (0x00000048) OP=addi REG=$9 RESULT=-32768 (0xffff8000)
+EXEC [SH LH halfword lane 1] PC=96 (0x00000060) OP=sh REG=none RESULT=0 (0x00000000)
+EXEC [SH LH halfword lane 1] PC=120 (0x00000078) OP=lh REG=$10 RESULT=-32768 (0xffff8000)
+EXEC [SH LH halfword lane 1] PC=144 (0x00000090) OP=lw REG=$11 RESULT=-2147418113 (0x8000ffff)
+PASS [SH LH halfword lane 1] LH sign extension = ffff8000
+PASS [SH LH halfword lane 1] SH preserves other half = 8000ffff
+EXEC [LB positive] PC=24 (0x00000018) OP=addi REG=$8 RESULT=127 (0x0000007f)
+EXEC [LB positive] PC=48 (0x00000030) OP=sb REG=none RESULT=0 (0x00000000)
+EXEC [LB positive] PC=72 (0x00000048) OP=lb REG=$10 RESULT=127 (0x0000007f)
+PASS [LB positive] positive load = 0000007f
+EXEC [LH positive] PC=24 (0x00000018) OP=addi REG=$8 RESULT=32767 (0x00007fff)
+EXEC [LH positive] PC=48 (0x00000030) OP=sh REG=none RESULT=0 (0x00000000)
+EXEC [LH positive] PC=72 (0x00000048) OP=lh REG=$10 RESULT=32767 (0x00007fff)
+PASS [LH positive] positive load = 00007fff
+EXEC [BEQ rs=-1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [BEQ rs=-1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BEQ rs=-1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BEQ rs=-1] PC=96 (0x00000060) OP=beq REG=none RESULT=0 (0x00000000)
+EXEC [BEQ rs=-1] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BEQ rs=-1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BEQ rs=-1] branch path marker = 00000063
+PASS [BEQ rs=-1] target executed = 0000004d
+EXEC [BEQ rs=0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [BEQ rs=0] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BEQ rs=0] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BEQ rs=0] PC=96 (0x00000060) OP=beq REG=none RESULT=0 (0x00000000)
+EXEC [BEQ rs=0] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BEQ rs=0] branch path marker = 00000000
+PASS [BEQ rs=0] target executed = 0000004d
+EXEC [BEQ rs=1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [BEQ rs=1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BEQ rs=1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BEQ rs=1] PC=96 (0x00000060) OP=beq REG=none RESULT=0 (0x00000000)
+EXEC [BEQ rs=1] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BEQ rs=1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BEQ rs=1] branch path marker = 00000063
+PASS [BEQ rs=1] target executed = 0000004d
+EXEC [BNE rs=-1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [BNE rs=-1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BNE rs=-1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BNE rs=-1] PC=96 (0x00000060) OP=bne REG=none RESULT=0 (0x00000000)
+EXEC [BNE rs=-1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BNE rs=-1] branch path marker = 00000000
+PASS [BNE rs=-1] target executed = 0000004d
+EXEC [BNE rs=0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [BNE rs=0] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BNE rs=0] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BNE rs=0] PC=96 (0x00000060) OP=bne REG=none RESULT=0 (0x00000000)
+EXEC [BNE rs=0] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BNE rs=0] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BNE rs=0] branch path marker = 00000063
+PASS [BNE rs=0] target executed = 0000004d
+EXEC [BNE rs=1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [BNE rs=1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BNE rs=1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BNE rs=1] PC=96 (0x00000060) OP=bne REG=none RESULT=0 (0x00000000)
+EXEC [BNE rs=1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BNE rs=1] branch path marker = 00000000
+PASS [BNE rs=1] target executed = 0000004d
+EXEC [BGEZ rs=-1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [BGEZ rs=-1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BGEZ rs=-1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BGEZ rs=-1] PC=96 (0x00000060) OP=bgez REG=none RESULT=0 (0x00000000)
+EXEC [BGEZ rs=-1] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BGEZ rs=-1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BGEZ rs=-1] branch path marker = 00000063
+PASS [BGEZ rs=-1] target executed = 0000004d
+EXEC [BGEZ rs=0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [BGEZ rs=0] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BGEZ rs=0] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BGEZ rs=0] PC=96 (0x00000060) OP=bgez REG=none RESULT=0 (0x00000000)
+EXEC [BGEZ rs=0] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BGEZ rs=0] branch path marker = 00000000
+PASS [BGEZ rs=0] target executed = 0000004d
+EXEC [BGEZ rs=1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [BGEZ rs=1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BGEZ rs=1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BGEZ rs=1] PC=96 (0x00000060) OP=bgez REG=none RESULT=0 (0x00000000)
+EXEC [BGEZ rs=1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BGEZ rs=1] branch path marker = 00000000
+PASS [BGEZ rs=1] target executed = 0000004d
+EXEC [BLTZ rs=-1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [BLTZ rs=-1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BLTZ rs=-1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BLTZ rs=-1] PC=96 (0x00000060) OP=bltz REG=none RESULT=0 (0x00000000)
+EXEC [BLTZ rs=-1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BLTZ rs=-1] branch path marker = 00000000
+PASS [BLTZ rs=-1] target executed = 0000004d
+EXEC [BLTZ rs=0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [BLTZ rs=0] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BLTZ rs=0] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BLTZ rs=0] PC=96 (0x00000060) OP=bltz REG=none RESULT=0 (0x00000000)
+EXEC [BLTZ rs=0] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BLTZ rs=0] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BLTZ rs=0] branch path marker = 00000063
+PASS [BLTZ rs=0] target executed = 0000004d
+EXEC [BLTZ rs=1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [BLTZ rs=1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BLTZ rs=1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BLTZ rs=1] PC=96 (0x00000060) OP=bltz REG=none RESULT=0 (0x00000000)
+EXEC [BLTZ rs=1] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BLTZ rs=1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BLTZ rs=1] branch path marker = 00000063
+PASS [BLTZ rs=1] target executed = 0000004d
+EXEC [BGTZ rs=-1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [BGTZ rs=-1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BGTZ rs=-1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BGTZ rs=-1] PC=96 (0x00000060) OP=bgtz REG=none RESULT=0 (0x00000000)
+EXEC [BGTZ rs=-1] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BGTZ rs=-1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BGTZ rs=-1] branch path marker = 00000063
+PASS [BGTZ rs=-1] target executed = 0000004d
+EXEC [BGTZ rs=0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [BGTZ rs=0] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BGTZ rs=0] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BGTZ rs=0] PC=96 (0x00000060) OP=bgtz REG=none RESULT=0 (0x00000000)
+EXEC [BGTZ rs=0] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BGTZ rs=0] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BGTZ rs=0] branch path marker = 00000063
+PASS [BGTZ rs=0] target executed = 0000004d
+EXEC [BGTZ rs=1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [BGTZ rs=1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BGTZ rs=1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BGTZ rs=1] PC=96 (0x00000060) OP=bgtz REG=none RESULT=0 (0x00000000)
+EXEC [BGTZ rs=1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BGTZ rs=1] branch path marker = 00000000
+PASS [BGTZ rs=1] target executed = 0000004d
+EXEC [BLEZ rs=-1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=-1 (0xffffffff)
+EXEC [BLEZ rs=-1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BLEZ rs=-1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BLEZ rs=-1] PC=96 (0x00000060) OP=blez REG=none RESULT=0 (0x00000000)
+EXEC [BLEZ rs=-1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BLEZ rs=-1] branch path marker = 00000000
+PASS [BLEZ rs=-1] target executed = 0000004d
+EXEC [BLEZ rs=0] PC=24 (0x00000018) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [BLEZ rs=0] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BLEZ rs=0] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BLEZ rs=0] PC=96 (0x00000060) OP=blez REG=none RESULT=0 (0x00000000)
+EXEC [BLEZ rs=0] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BLEZ rs=0] branch path marker = 00000000
+PASS [BLEZ rs=0] target executed = 0000004d
+EXEC [BLEZ rs=1] PC=24 (0x00000018) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [BLEZ rs=1] PC=48 (0x00000030) OP=addi REG=$9 RESULT=0 (0x00000000)
+EXEC [BLEZ rs=1] PC=72 (0x00000048) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [BLEZ rs=1] PC=96 (0x00000060) OP=blez REG=none RESULT=0 (0x00000000)
+EXEC [BLEZ rs=1] PC=120 (0x00000078) OP=addi REG=$10 RESULT=99 (0x00000063)
+EXEC [BLEZ rs=1] PC=144 (0x00000090) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [BLEZ rs=1] branch path marker = 00000063
+PASS [BLEZ rs=1] target executed = 0000004d
+EXEC [backward branch / signed negative displacement] PC=24 (0x00000018) OP=addi REG=$8 RESULT=3 (0x00000003)
+EXEC [backward branch / signed negative displacement] PC=48 (0x00000030) OP=addi REG=$8 RESULT=2 (0x00000002)
+EXEC [backward branch / signed negative displacement] PC=72 (0x00000048) OP=bgtz REG=none RESULT=0 (0x00000000)
+EXEC [backward branch / signed negative displacement] PC=48 (0x00000030) OP=addi REG=$8 RESULT=1 (0x00000001)
+EXEC [backward branch / signed negative displacement] PC=72 (0x00000048) OP=bgtz REG=none RESULT=0 (0x00000000)
+EXEC [backward branch / signed negative displacement] PC=48 (0x00000030) OP=addi REG=$8 RESULT=0 (0x00000000)
+EXEC [backward branch / signed negative displacement] PC=72 (0x00000048) OP=bgtz REG=none RESULT=0 (0x00000000)
+EXEC [backward branch / signed negative displacement] PC=96 (0x00000060) OP=addi REG=$10 RESULT=77 (0x0000004d)
+PASS [backward branch / signed negative displacement] loop count = 00000000
+PASS [backward branch / signed negative displacement] loop exit = 0000004d
+EXEC [J target and fall-through] PC=24 (0x00000018) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [J target and fall-through] PC=48 (0x00000030) OP=addi REG=$31 RESULT=123 (0x0000007b)
+EXEC [J target and fall-through] PC=72 (0x00000048) OP=j REG=none RESULT=0 (0x00000000)
+EXEC [J target and fall-through] PC=120 (0x00000078) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [J target and fall-through] jump skips marker = 00000000
+PASS [J target and fall-through] jump target = 0000004d
+PASS [J target and fall-through] link register = 0000007b
+EXEC [JAL target and fall-through] PC=24 (0x00000018) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [JAL target and fall-through] PC=48 (0x00000030) OP=addi REG=$31 RESULT=123 (0x0000007b)
+EXEC [JAL target and fall-through] PC=72 (0x00000048) OP=jal REG=$31 RESULT=76 (0x0000004c)
+EXEC [JAL target and fall-through] PC=120 (0x00000078) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [JAL target and fall-through] jump skips marker = 00000000
+PASS [JAL target and fall-through] jump target = 0000004d
+PASS [JAL target and fall-through] link register = 0000004c
+EXEC [JR register target] PC=24 (0x00000018) OP=addi REG=$8 RESULT=120 (0x00000078)
+EXEC [JR register target] PC=48 (0x00000030) OP=addi REG=$10 RESULT=0 (0x00000000)
+EXEC [JR register target] PC=72 (0x00000048) OP=jr REG=none RESULT=0 (0x00000000)
+EXEC [JR register target] PC=120 (0x00000078) OP=addi REG=$11 RESULT=77 (0x0000004d)
+PASS [JR register target] JR skips marker = 00000000
+PASS [JR register target] JR target = 0000004d
+EXEC [writes to register zero / NOP] PC=24 (0x00000018) OP=addi REG=none RESULT=42 (0x0000002a)
+EXEC [writes to register zero / NOP] PC=72 (0x00000048) OP=addi REG=$10 RESULT=7 (0x00000007)
+PASS [writes to register zero / NOP] $zero immutable = 00000000
+PASS [writes to register zero / NOP] NOP has no side effect = 00000007
+EXEC [required SW demo PC / zero output] PC=24 (0x00000018) OP=addi REG=$8 RESULT=42 (0x0000002a)
+EXEC [required SW demo PC / zero output] PC=48 (0x00000030) OP=sw REG=none RESULT=0 (0x00000000)
+PASS [required SW demo PC / zero output] SW displayed data must be zero = 00000000
+PASS [required SW demo PC / zero output] SW still stores correct data = 0000002a
+============================================================
+60 scenarios; 106 checks passed; 0 checks failed
+ALL CHECKS PASSED (behavioral tests only)
