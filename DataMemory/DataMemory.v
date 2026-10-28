@@ -53,7 +53,7 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, MemSize, ReadData)
     initial begin
         for (i = 0; i < 1024; i = i + 1) begin
             DataMemory[i] = 32'd0;
-            $readmemh("data_memory.mem", DataMemory);
+           // $readmemh("data_memory.mem", DataMemory);
         end
     end
 
