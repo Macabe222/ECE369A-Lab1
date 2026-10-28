@@ -1,3 +1,6 @@
+/*
+Team Percentage: Everyone worked on it with the same percentage of effort and we split up everything equally. Ian: 33%, Kamil: 33%, Macabe: 33%
+*/
 `timescale 1ns / 1ps
 
 
