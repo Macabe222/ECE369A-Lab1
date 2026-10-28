@@ -3,9 +3,9 @@
 // Team members / percentage effort: fill in your actual contributions.
 //
 // Vivado: add this file as a Simulation Source, set simulation top to
-// CPU32Bit_all_operations_tb, and Run All. Do not synthesize this file.
+// CPU32Bit_all_instructions_tb, and Run All. Do not synthesize this file.
 // Include all DESIGN .v sources and your existing instruction_memory.mem.
-// Icarus: iverilog -g2012 -s CPU32Bit_all_operations_tb -o verify <design .v files> CPU32Bit_all_operations_tb.v
+// Icarus: iverilog -g2012 -s CPU32Bit_all_instructions_tb -o verify <design .v files> CPU32Bit_all_instructions_tb.v
 //         vvp verify
 //
 // Matches the reviewed CPU hierarchy: dut.u4.Memory, dut.u11.registers,
@@ -16,12 +16,17 @@
 // JAL is checked against PC+4, matching this CPU's no architectural delay-slot
 // convention. Jump/branch fall-through slots contain NOPs.
 //
-// This covers all 29 REQUIRED mnemonics and selected edge cases, not exhaustive
+// This covers all 30 REQUIRED mnemonics and selected edge cases, not exhaustive
 // proof, post-routing verification, board clock startup, or .mem loading.
 // Validated on reviewed commit a43d9e9: 60 scenarios, 106 checks pass.
-// Set IMEM_WORDS=1024 after enlarging InstructionMemory to the required size.
+// IMEM_WORDS=128 works with the original ROM; use 1024 for an expanded ROM.
+// Console trace prints every non-NOP instruction, including stores/branches/jumps.
+// In the waveform add PC, Instruction, Operation, Result, WriteEnable,
+// DestinationRegister and Valid. Result is signed decimal in the console.
+// Keep your existing .mem sources in the project; this test injects its own
+// short programs and needs no new memory file.
 // No repository files or memory initialization files are modified by this test.
-module CPU32Bit_all_operations_tb;
+module CPU32Bit_all_instructions_tb;
     parameter IMEM_WORDS = 128;
     reg Clk = 0;
     reg Rst = 1;
@@ -32,6 +37,53 @@ module CPU32Bit_all_operations_tb;
     CPU32Bit dut(.Clk(Clk), .Rst(Rst), .outWriteData(outWriteData),
                  .outPC(outPC), .outInstruction(outInstruction));
     always #5 Clk = ~Clk;
+
+    // Convenient top-level signals for Vivado's waveform window.
+    wire [31:0] PC = outPC;
+    wire [31:0] Instruction = outInstruction;
+    wire [31:0] Result = outWriteData;
+    wire WriteEnable = dut.WB_RegWrite;
+    wire [4:0] DestinationRegister = dut.WB_WriteReg;
+    reg Valid = 0;
+    reg [8*8-1:0] Operation;
+
+    function [8*8-1:0] mnemonic;
+        input [31:0] inst;
+        begin
+            case(inst[31:26])
+                0: case(inst[5:0])
+                    0: mnemonic="sll"; 2: mnemonic="srl";
+                    8: mnemonic="jr";32:mnemonic="add";34:mnemonic="sub";
+                    36:mnemonic="and";37:mnemonic="or";38:mnemonic="xor";
+                    39:mnemonic="nor";42:mnemonic="slt";
+                    default:mnemonic="unknown";
+                endcase
+                1: if(inst[20:16]==1) mnemonic="bgez";else mnemonic="bltz";
+                2:mnemonic="j";3:mnemonic="jal";4:mnemonic="beq";
+                5:mnemonic="bne";6:mnemonic="blez";7:mnemonic="bgtz";
+                8:mnemonic="addi";10:mnemonic="slti";12:mnemonic="andi";
+                13:mnemonic="ori";14:mnemonic="xori";28:mnemonic="mul";
+                32:mnemonic="lb";33:mnemonic="lh";35:mnemonic="lw";
+                40:mnemonic="sb";41:mnemonic="sh";43:mnemonic="sw";
+                default:mnemonic="unknown";
+            endcase
+        end
+    endfunction
+
+    always @(posedge Clk) begin
+        // Allow the pipeline's nonblocking assignments to settle.
+        #1;
+        Valid = !Rst && (Instruction !== 32'd0) && (^Instruction !== 1'bx);
+        Operation = Valid ? mnemonic(Instruction) : "nop";
+        if(Valid) begin
+            if(WriteEnable && DestinationRegister!=0)
+                $display("EXEC [%0s] PC=%0d (0x%08h) OP=%0s REG=$%0d RESULT=%0d (0x%08h)",
+                    case_name,PC,PC,Operation,DestinationRegister,$signed(Result),Result);
+            else
+                $display("EXEC [%0s] PC=%0d (0x%08h) OP=%0s REG=none RESULT=%0d (0x%08h)",
+                    case_name,PC,PC,Operation,$signed(Result),Result);
+        end
+    end
 
     function [31:0] enc_i;
         input [5:0] op;
