@@ -1,5 +1,11 @@
 `timescale 1ns/1ps
 
+/////////////////////////////////////////////////////////
+// ALU control unit, takes the 4 bit ALUOp from the control
+// unit and the  6 bit function code from the instruction and
+// outputs the correct ALU control signal.
+/////////////////////////////////////////////////////////
+
 module ALUControlUnit(ALUOp, funct, control_signal);
     input [5:0] funct;
     input [3:0] ALUOp;

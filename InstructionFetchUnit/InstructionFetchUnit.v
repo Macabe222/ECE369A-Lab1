@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 ////////////////////////////////////////////////////////////////////////////////
-// Team Members:
-// Overall percent effort of each team meber:
+// Team Members: Macabe Wood, Kamil Frem, Ian Caulin-Cardo
+// Overall percent effort of each team member: 33%, 33%, 33%
 //
 // ECE369A - Computer Architecture
 // Laboratory 3 (PostLab)

@@ -1,5 +1,9 @@
 `timescale 1ns/1ps
 
+////////////////////////////////////////////////////////////////////////////////
+// Pipeline register to pass signals and data from the memory stage to the writeback stage
+////////////////////////////////////////////////////////////////////////////////
+
 module MEM_WB(
     RegWrite, MemToReg, ReadData, ALUResult, WriteReg, PCPlusFour, Clk, outRegWrite,
     outMemToReg, outReadData, outALUResult, outWriteReg, outPCPlusFour

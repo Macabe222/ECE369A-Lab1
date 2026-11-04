@@ -1,5 +1,9 @@
 `timescale 1ns/1ps
 
+////////////////////////////////////////////////////////////////////////////////
+// Pipeline register to pass signals and data from the instruction decode stage to execute stage
+////////////////////////////////////////////////////////////////////////////////
+
 module ID_EX(
     RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, MemRead, MemWrite, MemSize, Branch,
     ReadData1, ReadData2, PCPlusFour, Immediate, PotWriteReg1, PotWriteReg2, Shamt, Clk,

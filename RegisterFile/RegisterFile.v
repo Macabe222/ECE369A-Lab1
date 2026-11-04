@@ -5,7 +5,7 @@
 //
 //
 //
-// Student(s) Name and Last Name: FILL IN YOUR INFO HERE!
+// Student(s) Macabe Wood, Kamil Frem, Ian Caulin-Cardo
 //
 //
 // Module - register_file.v

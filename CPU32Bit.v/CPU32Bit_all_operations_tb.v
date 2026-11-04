@@ -1,6 +1,7 @@
 `timescale 1ns/1ps
 // ECE369A Labs 4-5: self-checking BEHAVIORAL CPU testbench.
 // Team members / percentage effort: fill in your actual contributions.
+// Macabe Wood, Kamil Frem, Ian Caulin-Cardo
 //
 // Vivado: add this file as a Simulation Source, set simulation top to
 // CPU32Bit_all_instructions_tb, and Run All. Do not synthesize this file.

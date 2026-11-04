@@ -1,7 +1,14 @@
 `timescale 1ns/1ps
 
+//////////////////////////////////////////////////////////////////////
+// Takes an instruction and outputs correct control signals based on
+// the OpCode and FuncCode
+//////////////////////////////////////////////////////////////////////
+
 module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRead, MemWrite, Branch, MemSize, JumpReg, Jump, ExtOp);
     input [31:0] Instruction;
+
+    // Control signals
     output reg RegWrite, ALUSrc, MemRead, MemWrite, Branch, Jump, JumpReg, ExtOp;
     output reg [1:0] MemToReg, MemSize, RegDst;
     output reg [3:0] ALUOp;
@@ -267,7 +274,7 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 Jump = 0;
                 MemSize = 2'b10;
             end
-            default: begin // Unknown opcode
+            default: begin // Unknown opcode / NOP
                 RegWrite = 0;
                 MemWrite = 0;
                 MemRead  = 0;

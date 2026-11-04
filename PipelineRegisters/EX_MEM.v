@@ -1,4 +1,9 @@
 `timescale 1ns/1ps
+
+////////////////////////////////////////////////////////////////////////////////
+// Pipeline register to pass signals and data from the execute stage to memory stage
+////////////////////////////////////////////////////////////////////////////////
+
 module EX_MEM(
     Branch, MemWrite, MemRead, MemSize, MemToReg, RegWrite, AddResult, ReadData2,
     Zero, ALUResult, WriteReg, PCPlusFour, Clk, outBranch, outMemWrite, outMemRead,

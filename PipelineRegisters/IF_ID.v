@@ -1,5 +1,9 @@
 `timescale 1ns/1ps
 
+////////////////////////////////////////////////////////////////////////////////
+// Pipeline register to pass signals and data from the instruction fetch stage to instruction decode stage
+////////////////////////////////////////////////////////////////////////////////
+
 module IF_ID(PCPlusFour, Instruction, outPCPlusFour, outInstruction, Clk);
     input [31:0] PCPlusFour, Instruction;
     input Clk;

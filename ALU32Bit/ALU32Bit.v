@@ -29,7 +29,6 @@
 module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
 
 	input [3:0] ALUControl; // control bits for ALU operation
-                                // you need to adjust the bitwidth as needed
     input [4:0] Shamt; // Shift Amount
 	input signed [31:0] A, B;	    // inputs
 
@@ -80,7 +79,6 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
                     ALUResult = 32'd1;
                 end
             end
-            default: ALUResult = 0;
             4'b1110: begin // BNE
                 if (A != B) begin
                     ALUResult = 32'd0;
@@ -89,6 +87,7 @@ module ALU32Bit(ALUControl, A, B, Shamt, ALUResult, Zero);
                     ALUResult = 32'd1;
                 end
             end
+            default: ALUResult = 0;
         endcase
 
         Zero = (ALUResult == 32'd0);
