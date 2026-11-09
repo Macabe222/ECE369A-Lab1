@@ -55,9 +55,65 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     // Output write data and program counter for display purposes
     output [31:0] outWriteData, outPC, outInstruction;
 
+    //Hazard detection
+
+    wire Stall;
+    reg PCWrite;
+    reg IFIDWrite;
+
+    reg Next_RegWrite;
+    reg Next_AluSrc;
+    reg Next_MemRead;
+    reg Next_MemWrite;
+    reg Next_Branch;
+    reg [3:0] Next_AluOp;
+    reg [1:0] Next_RegDst;
+    reg [1:0] Next_MemToReg;
+    reg [1:0] Next_MemSize;
+
+    always @(*) begin
+        Next_RegWrite = ID_RegWrite;
+        Next_ALUSrc = ID_ALUSrc;
+        Next_MemRead = ID_MemRead;
+        Next_MemWrite = ID_MemWrite;
+        Next_ALUOp = ID_ALUOp;
+        Next_RegDst = ID_RegDst;
+        Next_MemToReg = ID_MemToReg;
+        Next_MemSize = ID_MemSize
+    end
+
+    Next_Branch = 0;
+
+    if (Stall == 1 || Reset == 1) begin
+        
+        Next_RegWrite = 0;
+        Next_ALUSrc = 0;
+        Next_MemRead = 0;
+        Next_MemWrite = 0;
+        Next_ALUOp = 4'd0;
+        Next_RegDst = 2'd0;
+        Next_MemToReg = 2'd0;
+        Next_MemSize = 2'd0
+
+    end
+
+    HazardDetectionUnit hazard_unit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM, WriteReg, WB_RegWrite, WB_WriteReg, Stall);
+
+    always @(*) begin
+        PCWrite = 1;
+        IFIDWrite = 1;
+
+        if (Stall == 1) begin
+
+            PCWrite = 1;
+            IFIDWrite = 1;
+
+        end
+
+    end
     // Instruction fetch
     InstructionMemory u4(Address, Instruction); // Retrieve instruction from instruction memory
-    ProgramCounter u5(PCInput, Address, Rst, Clk); // Store current instruction addresss in PC
+    ProgramCounter u5(PCInput, Address, Rst, Clk, PCWrite); // Store current instruction addresss in PC
     PCAdder u6(Address, PCPlusFour); // Increment intstruction address
     ShiftLeftTwo26Bit u7(ID_Instruction[25:0], JumpShifted); // Calculate jump address
     assign JumpAddress = {ID_PCPlusFour[31:28], JumpShifted[27:0]}; // Jump address is the top 4 bits of PC+4 and JumpShifter
@@ -66,7 +122,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     Mux32Bit2To1 u10(PCInput, MuxTwoOut, ID_ReadData1, ID_JumpReg); // Select between mux two out and jr address
 
     // Instruction fethc -> instruction decode register
-    IF_ID u0(PCPlusFour, Instruction, ID_PCPlusFour, ID_Instruction, Clk);
+    IF_ID u0(PCPlusFour, Instruction, ID_PCPlusFour, ID_Instruction, Clk, Reset, ID_Write, ID_Redirect);
 
     // Instruction decode
 
@@ -79,7 +135,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
 
     // Instruction decode -> execute register
     ID_EX u1(
-        ID_RegWrite, ID_ALUSrc, ID_ALUOp, ID_RegDst, ID_MemToReg, ID_MemRead, ID_MemWrite, ID_MemSize, ID_Branch,
+        Next_RegWrite, Next_ALUSrc, Next_ALUOp, Next_RegDst, Next_MemToReg, Next_MemRead, Next_MemWrite, Next_MemSize, Next_Branch,
         ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[20:16], ID_Instruction[15:11], ID_Instruction[10:6], Clk,
         EX_RegWrite, EX_ALUSrc, EX_ALUOp, EX_RegDst, EX_MemToReg, EX_MemRead, EX_MemWrite,
         EX_MemSize, EX_Branch, EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate,
