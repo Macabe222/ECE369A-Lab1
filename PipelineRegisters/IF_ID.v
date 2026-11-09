@@ -4,19 +4,28 @@
 // Pipeline register to pass signals and data from the instruction fetch stage to instruction decode stage
 ////////////////////////////////////////////////////////////////////////////////
 
-module IF_ID(PCPlusFour, Instruction, outPCPlusFour, outInstruction, Clk);
+module IF_ID(PCPlusFour, Instruction, outPCPlusFour, outInstruction, Clk, Reset, WriteEnable, Flush);
     input [31:0] PCPlusFour, Instruction;
-    input Clk;
+    input Clk, Reset, WriteEnable, Flush;
     output reg [31:0] outPCPlusFour, outInstruction;
 
     // Initialize register contents
-    initial begin
-        outPCPlusFour = 0; outInstruction = 0;
-    end
 
     // Update at rising clock edge
     always @(posedge Clk) begin
-        outPCPlusFour <= PCPlusFour;
-        outInstruction <= Instruction;
+        if (Reset == 1) begin
+            outPCPlusFour <= 0;
+            outInstruction <= 0;
+        end
+        if (Flush == 1) begin
+            outPCPlusFour <= 0;
+            outInstruction <= 0;
+        end
+
+        else if (WriteEnable) begin
+            outPCPlusFour <= PCPlusFour;
+            outInstruction <= Instrucion;
+        end
+        
     end
 endmodule
