@@ -111,6 +111,95 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
         end
 
     end
+
+    reg ID_BranchCondition;
+    wire [31:0] ID_SignedOffset;
+    wire [31:0] ID_BranchOffset;
+    wire [31:0] ID_BranchTarget;
+    reg ID_Redirect;
+    reg [31:0] ID_RedirectAddress;
+
+    // Extend the signed 16 bit branch displacement to 32 bits.
+
+    assign ID_SignedOffset = {{16{ID_Instruction[15]}}, ID_Instruction[15:0]};
+
+    // Convert a displacement in instruction words to bytes.
+    assign ID_BranchOffset = ID_SignedOffset << 2;
+    assign ID_BranchTarget = ID_PCPlusFour + ID_BranchOffset;
+
+    always @(*) begin
+        ID_BranchCondition = 1'b0;
+
+        case (ID_Instruction[31:26])
+            6'b000100: begin // beq
+                if (ID_ReadData1 == ID_ReadData2) begin
+                    ID_BranchCondition = 1'b1;
+                end
+            end
+            6'b000101: begin // bne
+                if (ID_ReadData1 != ID_ReadData2) begin
+                    ID_BranchCondition = 1'b1;
+                end
+            end
+            6'b000110: begin // blez
+                if ($signed(ID_ReadData1) <= 0) begin
+                    ID_BranchCondition = 1'b1;
+                end
+            end
+            6'b000111: begin // bgtz
+                if ($signed(ID_ReadData1) > 0) begin
+                    ID_BranchCondition = 1'b1;
+                end
+            end
+            6'b000001: begin // bltz or bgez
+                if (ID_Instruction[20:16] == 5'b00000) begin
+                    if ($signed(ID_ReadData1) < 0) begin
+                        ID_BranchCondition = 1'b1;
+                    end
+                end
+                if (ID_Instruction[20:16] == 5'b00001) begin
+                    if ($signed(ID_ReadData1) >= 0) begin
+                        ID_BranchCondition = 1'b1;
+                    end
+                end
+            end
+            default: begin
+                ID_BranchCondition = 1'b0;
+            end
+        endcase
+    end
+
+    always @(*) begin
+        ID_Redirect = 1'b0;
+        ID_RedirectAddress = 32'd0;
+
+        // Only use register values after dependencies are resolved.
+        if (Rst == 1'b0) begin
+            if (Stall == 1'b0) begin
+                if (ID_JumpReg == 1'b1) begin // jr
+                    ID_Redirect = 1'b1;
+                    ID_RedirectAddress = ID_ReadData1;
+                end else if (ID_Jump == 1'b1) begin // j or jal
+                    ID_Redirect = 1'b1;
+                    ID_RedirectAddress = JumpAddress;
+                end else if (ID_Branch == 1'b1) begin
+                    if (ID_BranchCondition == 1'b1) begin
+                        ID_Redirect = 1'b1;
+                        ID_RedirectAddress = ID_BranchTarget;
+                    end
+                end
+            end
+        end
+    end
+
+    always @(*) begin
+        PCInput = PCPlusFour;
+        if (ID_Redirect == 1'b1) begin
+            PCInput = ID_RedirectAddress;
+        end
+    end
+
+
     // Instruction fetch
     InstructionMemory u4(Address, Instruction); // Retrieve instruction from instruction memory
     ProgramCounter u5(PCInput, Address, Rst, Clk, PCWrite); // Store current instruction addresss in PC
@@ -170,15 +259,41 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
 
     // Write back
     Mux32Bit3To1 u21(WB_WriteData, WB_MemReadData, WB_ALUResult, WB_PCPlusFour, WB_MemToReg); // Select write back data
-    assign outWriteData = WB_WriteData;  // Assign output
+
+    
+    // Assign output
+
+        always @(*) begin
+        outWriteData = 32'd0;
+        if (WB_RegWrite == 1'b1) begin
+            if (WB_WriteReg != 5'd0) begin
+                outWriteData = WB_WriteData;
+            end
+        end
+    end
+
+    assign outPC = WB_PCPlusFour - 32'd4;
+    assign outInstruction = WB_Instruction;
+    
     assign outPC = WB_PCPlusFour - 32'd4; // Assign output
 
     // Keep track of instruction through pipeline so that the correct one is returned
-    always @(posedge Clk) begin
-        EX_Instruction <= ID_Instruction;
+    always @(posedge Clk or posedge Rst) begin
+    if (Rst == 1'b1) begin
+        EX_Instruction <= 32'd0;
+        MEM_Instruction <= 32'd0;
+        WB_Instruction <= 32'd0;
+    end else begin
+        if (Stall == 1'b1) begin
+            EX_Instruction <= 32'd0;
+        end else begin
+            EX_Instruction <= ID_Instruction;
+        end
+
         MEM_Instruction <= EX_Instruction;
         WB_Instruction <= MEM_Instruction;
     end
+end
 
     assign outInstruction = WB_Instruction;
 
