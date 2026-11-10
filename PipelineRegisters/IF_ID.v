@@ -12,17 +12,17 @@ module IF_ID(PCPlusFour, Instruction, outPCPlusFour, outInstruction, Clk, Reset,
     // Initialize register contents
 
     // Update at rising clock edge
-    always @(posedge Clk) begin
+    always @(posedge Clk or posedge Reset) begin
         if (Reset == 1) begin
             outPCPlusFour <= 0;
             outInstruction <= 0;
         end
-        if (Flush == 1) begin
+        else if (Flush == 1) begin
             outPCPlusFour <= 0;
             outInstruction <= 0;
         end
 
-        else if (WriteEnable) begin
+        else if (WriteEnable == 1) begin
             outPCPlusFour <= PCPlusFour;
             outInstruction <= Instruction;
         end
