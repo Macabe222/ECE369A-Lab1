@@ -25,7 +25,7 @@ module HazardDetectionUnit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrit
     assign rs = ID_Instruction[25:21];
     assign rt = ID_Instruction [20:16];
 
-    reg UsesRS;
+    reg UsesRs;
     reg UsesRt;
     reg EX_Hazard;
     reg MEM_Hazard;
