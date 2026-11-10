@@ -15,7 +15,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     // 1 bit execute wires
     wire EX_RegWrite, EX_ALUSrc, EX_MemRead, EX_MemWrite, EX_Branch, EX_Zero;
     // 1 bit memory wires
-    wire MEM_Branch, MEM_MemWrite, MEM_MemRead, MEM_RegWrite, MEM_PCSrc, MEM_Zero;
+    wire MEM_Branch, MEM_MemWrite, MEM_MemRead, MEM_RegWrite, MEM_Zero;
     // 1 bit write back wires
     wire WB_RegWrite;
     // 2 bit instruction decode wires
@@ -39,7 +39,9 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     // 5 bit write back wires
     wire [4:0] WB_WriteReg;
     // Miscellaneous / instruction fetch wires
-    wire [31:0] Address, Instruction, PCPlusFour, PCInput, JumpAddress, MuxOneOut, MuxTwoOut, JumpShifted;
+    wire [31:0] Address, Instruction, PCPlusFour;
+    wire [31:0] JumpAddress, JumpShifted;
+    reg [31:0] PCInput;
     // 32 bit instruction decode wires
     wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate;
     // 32 bit execute wires
@@ -53,7 +55,9 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     reg [31:0] EX_Instruction, MEM_Instruction, WB_Instruction;
 
     // Output write data and program counter for display purposes
-    output [31:0] outWriteData, outPC, outInstruction;
+    output reg [31:0] outWriteData;
+    output [31:0] outPC;
+    output [31:0] outInstruction;
 
     //Hazard detection
 
@@ -62,11 +66,11 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     reg IFIDWrite;
 
     reg Next_RegWrite;
-    reg Next_AluSrc;
+    reg Next_ALUSrc;
     reg Next_MemRead;
     reg Next_MemWrite;
     reg Next_Branch;
-    reg [3:0] Next_AluOp;
+    reg [3:0] Next_ALUOp;
     reg [1:0] Next_RegDst;
     reg [1:0] Next_MemToReg;
     reg [1:0] Next_MemSize;
@@ -79,25 +83,27 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
         Next_ALUOp = ID_ALUOp;
         Next_RegDst = ID_RegDst;
         Next_MemToReg = ID_MemToReg;
-        Next_MemSize = ID_MemSize
+        Next_MemSize = ID_MemSize;
+
+         Next_Branch = 0;
+
+        if (Stall == 1 || Rst == 1) begin
+            
+            Next_RegWrite = 0;
+            Next_ALUSrc = 0;
+            Next_MemRead = 0;
+            Next_MemWrite = 0;
+            Next_ALUOp = 4'd0;
+            Next_RegDst = 2'd0;
+            Next_MemToReg = 2'd0;
+            Next_MemSize = 2'd0;
+
+        end
     end
 
-    Next_Branch = 0;
+   
 
-    if (Stall == 1 || Reset == 1) begin
-        
-        Next_RegWrite = 0;
-        Next_ALUSrc = 0;
-        Next_MemRead = 0;
-        Next_MemWrite = 0;
-        Next_ALUOp = 4'd0;
-        Next_RegDst = 2'd0;
-        Next_MemToReg = 2'd0;
-        Next_MemSize = 2'd0
-
-    end
-
-    HazardDetectionUnit hazard_unit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM, WriteReg, WB_RegWrite, WB_WriteReg, Stall);
+    HazardDetectionUnit hazard_unit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM_WriteReg, WB_RegWrite, WB_WriteReg, Stall);
 
     always @(*) begin
         PCWrite = 1;
@@ -105,8 +111,8 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
 
         if (Stall == 1) begin
 
-            PCWrite = 1;
-            IFIDWrite = 1;
+            PCWrite = 0;
+            IFIDWrite = 0;
 
         end
 
@@ -206,12 +212,9 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     PCAdder u6(Address, PCPlusFour); // Increment intstruction address
     ShiftLeftTwo26Bit u7(ID_Instruction[25:0], JumpShifted); // Calculate jump address
     assign JumpAddress = {ID_PCPlusFour[31:28], JumpShifted[27:0]}; // Jump address is the top 4 bits of PC+4 and JumpShifter
-    Mux32Bit2To1 u8(MuxOneOut, PCPlusFour, MEM_AddResult, MEM_PCSrc); // Select between PC+4, and branch memory address
-    Mux32Bit2To1 u9(MuxTwoOut, MuxOneOut, JumpAddress, ID_Jump); // Select between mux one out jump address
-    Mux32Bit2To1 u10(PCInput, MuxTwoOut, ID_ReadData1, ID_JumpReg); // Select between mux two out and jr address
 
     // Instruction fethc -> instruction decode register
-    IF_ID u0(PCPlusFour, Instruction, ID_PCPlusFour, ID_Instruction, Clk, Reset, ID_Write, ID_Redirect);
+    IF_ID u0(PCPlusFour, Instruction, ID_PCPlusFour, ID_Instruction, Clk, Rst, IFIDWrite, ID_Redirect);
 
     // Instruction decode
 
@@ -248,7 +251,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     );
 
     // Memory
-    assign MEM_PCSrc = MEM_Branch & MEM_Zero; // Capture PC src
+   
     DataMemory u20(MEM_ALUResult, MEM_ReadData2, Clk, MEM_MemWrite, MEM_MemRead, MEM_MemSize, MEM_MemReadData); // Memory access
 
     // Memory -> write back register
@@ -272,8 +275,6 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
         end
     end
 
-    assign outPC = WB_PCPlusFour - 32'd4;
-    assign outInstruction = WB_Instruction;
     
     assign outPC = WB_PCPlusFour - 32'd4; // Assign output
 
