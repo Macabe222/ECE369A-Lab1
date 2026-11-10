@@ -22,10 +22,11 @@ module IF_ID(PCPlusFour, Instruction, outPCPlusFour, outInstruction, Clk, Reset,
             outInstruction <= 0;
         end
 
-        else if (WriteEnable == 1) begin
+        else if (WriteEnable) begin
             outPCPlusFour <= PCPlusFour;
             outInstruction <= Instruction;
         end
         
     end
 endmodule
+
