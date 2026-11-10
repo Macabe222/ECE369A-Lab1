@@ -40,7 +40,8 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     wire [4:0] WB_WriteReg;
     // Miscellaneous / instruction fetch wires
     wire [31:0] Address, Instruction, PCPlusFour;
-    wire [31:0] JumpAddress, JumpShifted;
+    wire [31:0] JumpAddress;
+    wire [27:0] JumpShifted;
     reg [31:0] PCInput;
     // 32 bit instruction decode wires
     wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate;
@@ -231,7 +232,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
         ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[20:16], ID_Instruction[15:11], ID_Instruction[10:6], Clk,
         EX_RegWrite, EX_ALUSrc, EX_ALUOp, EX_RegDst, EX_MemToReg, EX_MemRead, EX_MemWrite,
         EX_MemSize, EX_Branch, EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate,
-        EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt
+        EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt, Rst
     );
 
     // Execute
@@ -247,7 +248,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
         EX_Branch, EX_MemWrite, EX_MemRead, EX_MemSize, EX_MemToReg, EX_RegWrite, EX_AddResult, EX_ReadData2,
         EX_Zero, EX_ALUResult, EX_WriteReg, EX_PCPlusFour, Clk, MEM_Branch, MEM_MemWrite, MEM_MemRead,
         MEM_MemSize, MEM_MemToReg, MEM_RegWrite, MEM_AddResult, MEM_ReadData2,
-        MEM_Zero, MEM_ALUResult, MEM_WriteReg, MEM_PCPlusFour
+        MEM_Zero, MEM_ALUResult, MEM_WriteReg, MEM_PCPlusFour, Rst
     );
 
     // Memory
@@ -257,7 +258,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     // Memory -> write back register
     MEM_WB u3(
         MEM_RegWrite, MEM_MemToReg, MEM_MemReadData, MEM_ALUResult, MEM_WriteReg, MEM_PCPlusFour, Clk, WB_RegWrite,
-        WB_MemToReg, WB_MemReadData, WB_ALUResult, WB_WriteReg, WB_PCPlusFour
+        WB_MemToReg, WB_MemReadData, WB_ALUResult, WB_WriteReg, WB_PCPlusFour, Rst
     );
 
     // Write back
@@ -299,3 +300,4 @@ end
     assign outInstruction = WB_Instruction;
 
 endmodule
+
