@@ -24,7 +24,7 @@ module IF_ID(PCPlusFour, Instruction, outPCPlusFour, outInstruction, Clk, Reset,
 
         else if (WriteEnable) begin
             outPCPlusFour <= PCPlusFour;
-            outInstruction <= Instrucion;
+            outInstruction <= Instruction;
         end
         
     end
