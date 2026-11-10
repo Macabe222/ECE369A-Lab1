@@ -46,8 +46,9 @@ module InstructionFetchUnit(Instruction, PCResult, Reset, Clk);
     input Clk;
 
     PCAdder u0(PCResult, PCAddResult);
-    ProgramCounter u1(PCAddResult, PCResult, Reset, Clk);
+    ProgramCounter u1(PCAddResult, PCResult, Reset, Clk, 1'b1); // Always advance this standalone fetch demo.
     InstructionMemory u2(PCResult, Instruction);
 
 
 endmodule
+
