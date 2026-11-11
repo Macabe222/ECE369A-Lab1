@@ -18,7 +18,8 @@ module ProgramCounter_tb();
         .Address(Address), 
         .PCResult(PCResult), 
         .Reset(Reset), 
-        .Clk(Clk)
+        .Clk(Clk),
+        .WriteEnable(1'b1)
     );
 
 	initial begin
@@ -36,4 +37,5 @@ module ProgramCounter_tb();
 	end
 
 endmodule
+
 
