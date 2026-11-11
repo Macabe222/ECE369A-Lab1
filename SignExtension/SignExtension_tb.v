@@ -13,7 +13,7 @@ module SignExtension_tb();
     wire [31:0]	out;
 
     SignExtension u0(
-        .in(in), .out(out)
+        .in(in), .out(out), .ExtOp(1'b0) // Test signed extension.
     );
         
     initial begin
@@ -33,3 +33,4 @@ module SignExtension_tb();
 	 end
 
 endmodule
+
