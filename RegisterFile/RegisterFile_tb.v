@@ -12,6 +12,7 @@
 
 
 module RegisterFile_tb();
+    integer i; // Index used by the write/read loops.
 
 	reg [4:0] ReadRegister1;
 	reg [4:0] ReadRegister2;
@@ -68,3 +69,4 @@ module RegisterFile_tb();
 	end
 
 endmodule
+
