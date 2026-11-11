@@ -1,24 +1,7 @@
 `timescale 1ns/1ps
-// ECE369A Labs 4-5: self-checking BEHAVIORAL CPU testbench.
-// Team members / percentage effort: fill in your actual contributions.
+// Team members
 // Macabe Wood, Kamil Frem, Ian Caulin-Cardo
-//
-// Vivado: add this file as a Simulation Source, set simulation top to
-// CPU32Bit_all_instructions_tb, and Run All. Do not synthesize this file.
-// Include all DESIGN .v sources and your existing instruction_memory.mem.
-// Icarus: iverilog -g2012 -s CPU32Bit_all_instructions_tb -o verify <design .v files> CPU32Bit_all_instructions_tb.v
-//         vvp verify
-//
-// Matches the reviewed CPU hierarchy: dut.u4.Memory, dut.u11.registers,
-// dut.u20.DataMemory. Update these paths if you rename those instances.
-// Programs are injected into instruction RAM for simulation only. Register
-// operands are initialized by actual ADDI instructions; memory by actual stores.
-// Instructions are emitted consecutively. The CPU must insert hazard bubbles.
-// JAL is checked against PC+4, matching this CPU's no architectural delay-slot
-// convention. Taken control transfers must discard the next fetched instruction.
-//
-// This covers all 30 REQUIRED mnemonics and selected edge cases, not exhaustive
-// proof, post-routing verification, board clock startup, or .mem loading.
+
 // Updated for Lab 6 stall detection and ID branch resolution.
 // IMEM_WORDS=128 works with the original ROM; use 1024 for an expanded ROM.
 // Console trace prints every non-NOP instruction, including stores/branches/jumps.
