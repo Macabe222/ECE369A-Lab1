@@ -12,13 +12,16 @@ module ALU32Bit_tb();
 	reg [3:0] ALUControl;   // control bits for ALU operation
 	reg [31:0] A, B;	        // inputs
 
-	wire [63:0] ALUResult;	// answer
+	wire [31:0] ALUResult;	// answer
 	wire Zero;	        // Zero=1 if ALUResult == 0
+
+    reg [4:0] Shamt = 5'd2; // Explicit shift distance for the shift cases.
 
     ALU32Bit u0(
         .ALUControl(ALUControl),
         .A(A),
         .B(B),
+        .Shamt(Shamt),
         .ALUResult(ALUResult),
         .Zero(Zero)
     );
@@ -93,3 +96,4 @@ module ALU32Bit_tb();
     end
 
 endmodule
+
