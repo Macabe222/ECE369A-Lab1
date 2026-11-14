@@ -45,7 +45,6 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                         UsesRs = 1;
                         UsesRt = 0;
                     end
-                    end
                     6'b100000: begin //add
                         UsesRs = 1;
                         UsesRt = 1;

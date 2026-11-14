@@ -11,6 +11,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     input Clk, Rst;
 
     reg ID_BranchCondition, ID_Redirect;
+    reg [31:0] ID_RedirectAddress;
 
     // 1 bit instruction decode wires
     wire ID_Jump, ID_JumpReg, ID_RegWrite, ID_ALUSrc, ID_MemRead, ID_MemWrite, ID_Branch, ID_ExtOp, ID_UsesRs, ID_UsesRt;
@@ -46,7 +47,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     wire [27:0] JumpShifted;
     reg [31:0] PCInput;
     // 32 bit instruction decode wires
-    wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate, ID_SignedOffset, ID_BranchOffset, ID_BranchTarget, ID_RedirectAddress;
+    wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate, ID_SignedOffset, ID_BranchOffset, ID_BranchTarget;
     // 32 bit execute wires
     wire [31:0] EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate, EX_AddResult, EX_AddIn, EX_ALUIn, EX_ALUResult;
     // 32 bit memory wires

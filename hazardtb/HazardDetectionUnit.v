@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-module HazardDetectionUnit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM_WriteReg, UsesRt, UsesRs Stall);
+module HazardDetectionUnit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM_WriteReg, UsesRs, UsesRt, Stall);
 
     input [31:0] ID_Instruction;
 
@@ -12,8 +12,6 @@ module HazardDetectionUnit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrit
 
     output reg Stall;
 
-    wire [5:0] opcode;
-    wire [5:0] funct;
     wire [4:0] rs;
     wire [4:0] rt;
 
@@ -69,9 +67,6 @@ module HazardDetectionUnit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrit
             Stall = 1'b1;
         end
         if (MEM_Hazard == 1'b1) begin
-            Stall = 1'b1;
-        end
-        if (WB_Hazard == 1'b1) begin
             Stall = 1'b1;
         end
     end
