@@ -10,8 +10,10 @@
 module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     input Clk, Rst;
 
+    reg ID_BranchCondition, ID_Redirect;
+
     // 1 bit instruction decode wires
-    wire ID_Jump, ID_JumpReg, ID_RegWrite, ID_ALUSrc, ID_MemRead, ID_MemWrite, ID_Branch, ID_ExtOp;
+    wire ID_Jump, ID_JumpReg, ID_RegWrite, ID_ALUSrc, ID_MemRead, ID_MemWrite, ID_Branch, ID_ExtOp, ID_UsesRs, ID_UsesRt;
     // 1 bit execute wires
     wire EX_RegWrite, EX_ALUSrc, EX_MemRead, EX_MemWrite, EX_Branch, EX_Zero;
     // 1 bit memory wires
@@ -44,7 +46,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     wire [27:0] JumpShifted;
     reg [31:0] PCInput;
     // 32 bit instruction decode wires
-    wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate;
+    wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate, ID_SignedOffset, ID_BranchOffset, ID_BranchTarget, ID_RedirectAddress;
     // 32 bit execute wires
     wire [31:0] EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate, EX_AddResult, EX_AddIn, EX_ALUIn, EX_ALUResult;
     // 32 bit memory wires
@@ -76,6 +78,8 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     reg [1:0] Next_MemToReg;
     reg [1:0] Next_MemSize;
 
+
+    // Register to keep/reset control signals between stages depending on data hazard
     always @(*) begin
         Next_RegWrite = ID_RegWrite;
         Next_ALUSrc = ID_ALUSrc;
@@ -86,10 +90,9 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
         Next_MemToReg = ID_MemToReg;
         Next_MemSize = ID_MemSize;
 
-         Next_Branch = 0;
+        Next_Branch = 0;
 
         if (Stall == 1 || Rst == 1) begin
-            
             Next_RegWrite = 0;
             Next_ALUSrc = 0;
             Next_MemRead = 0;
@@ -98,36 +101,22 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
             Next_RegDst = 2'd0;
             Next_MemToReg = 2'd0;
             Next_MemSize = 2'd0;
-
         end
     end
 
-   
-
-    HazardDetectionUnit hazard_unit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM_WriteReg, WB_RegWrite, WB_WriteReg, Stall);
-
+    // Separate register because we don't want to reset to affect program counter
     always @(*) begin
         PCWrite = 1;
         IFIDWrite = 1;
 
         if (Stall == 1) begin
-
             PCWrite = 0;
             IFIDWrite = 0;
-
         end
 
     end
 
-    reg ID_BranchCondition;
-    wire [31:0] ID_SignedOffset;
-    wire [31:0] ID_BranchOffset;
-    wire [31:0] ID_BranchTarget;
-    reg ID_Redirect;
-    reg [31:0] ID_RedirectAddress;
-
     // Extend the signed 16 bit branch displacement to 32 bits.
-
     assign ID_SignedOffset = {{16{ID_Instruction[15]}}, ID_Instruction[15:0]};
 
     // Convert a displacement in instruction words to bytes.
@@ -222,9 +211,11 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     // Pass correct instruction fields and control signals to the register file
     RegisterFile u11(ID_Instruction[25:21], ID_Instruction[20:16], WB_WriteReg, WB_WriteData, WB_RegWrite, Clk, ID_ReadData1, ID_ReadData2);
     // Pass intstruction and capture control signals
-    Controller u12(ID_Instruction, ID_RegWrite, ID_ALUSrc, ID_MemToReg, ID_RegDst, ID_ALUOp, ID_MemRead, ID_MemWrite, ID_Branch, ID_MemSize, ID_JumpReg, ID_Jump, ID_ExtOp);
+    Controller u12(ID_Instruction, ID_RegWrite, ID_ALUSrc, ID_MemToReg, ID_RegDst, ID_ALUOp, ID_MemRead, ID_MemWrite, ID_Branch, ID_MemSize, ID_JumpReg, ID_Jump, ID_ExtOp, ID_UsesRs, ID_UsesRt);
     // Sign extend immediate number
     SignExtension u13(ID_Instruction[15:0], ID_Immediate, ID_ExtOp);
+    // Hazard detection
+    HazardDetectionUnit hazard_unit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM_WriteReg, ID_UsesRs, ID_UsesRt, Stall);
 
     // Instruction decode -> execute register
     ID_EX u1(
@@ -252,7 +243,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     );
 
     // Memory
-   
+
     DataMemory u20(MEM_ALUResult, MEM_ReadData2, Clk, MEM_MemWrite, MEM_MemRead, MEM_MemSize, MEM_MemReadData); // Memory access
 
     // Memory -> write back register
@@ -264,7 +255,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     // Write back
     Mux32Bit3To1 u21(WB_WriteData, WB_MemReadData, WB_ALUResult, WB_PCPlusFour, WB_MemToReg); // Select write back data
 
-    
+
     // Assign output
 
         always @(*) begin
@@ -276,7 +267,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
         end
     end
 
-    
+
     assign outPC = WB_PCPlusFour - 32'd4; // Assign output
 
     // Keep track of instruction through pipeline so that the correct one is returned
@@ -300,4 +291,3 @@ end
     assign outInstruction = WB_Instruction;
 
 endmodule
-
