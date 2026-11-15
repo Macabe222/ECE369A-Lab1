@@ -54,7 +54,7 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, MemSize, ReadData)
         for (i = 0; i < 1024; i = i + 1) begin
             DataMemory[i] = 32'd0;
         end
-        $readmemh("data_memory.mem", DataMemory);
+        $readmemh("public_data_memory_lab6.mem", DataMemory);
     end
 
     // Store path
