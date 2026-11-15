@@ -2,14 +2,14 @@
 // Direct combinational checks include false dependencies and $zero writes.
 module HazardDetectionUnit_tb;
     reg [31:0] ID_Instruction;
-    reg EX_RegWrite, MEM_RegWrite, WB_RegWrite;
-    reg [4:0] EX_WriteReg, MEM_WriteReg, WB_WriteReg;
+    reg EX_RegWrite, MEM_RegWrite;
+    reg [4:0] EX_WriteReg, MEM_WriteReg;
     wire Stall, UsesRs, UsesRt;
     integer stage;
     integer checks = 0;
     Controller u0(ID_Instruction, , , , , , , , , , , , , UsesRs, UsesRt);
     HazardDetectionUnit dut(ID_Instruction, EX_RegWrite, EX_WriteReg,
-        MEM_RegWrite, MEM_WriteReg, WB_RegWrite, WB_WriteReg, UsesRs, UsesRt, Stall);
+        MEM_RegWrite, MEM_WriteReg, UsesRs, UsesRt, Stall);
 
     task expect_stall;
         input expected;
@@ -43,8 +43,8 @@ module HazardDetectionUnit_tb;
             // rs=8 and rt=9 are deliberately different.
             ID_Instruction = {opcode,5'd8,5'd9,5'd10,5'd0,funct};
             for(stage=0;stage<3;stage=stage+1) begin
-                set_writer(stage,8); expect_stall(uses_rs);
-                set_writer(stage,9); expect_stall(uses_rt);
+                set_writer(stage,8); expect_stall(stage < 2 && uses_rs);
+                set_writer(stage,9); expect_stall(stage < 2 && uses_rt);
                 set_writer(stage,10); expect_stall(0); // unrelated destination
                 EX_RegWrite=0; MEM_RegWrite=0; WB_RegWrite=0;
                 expect_stall(0);
