@@ -1,0 +1,39 @@
+20040000	//	main:	addi	$a0, $zero, 0 ->	main:	addi	$a0, $zero, 0
+20080008	//		addi	$t0, $zero, 8 ->		addi	$t0, $zero, 8
+20090009	//		addi	$t1, $zero, 9 ->		addi	$t1, $zero, 9
+200a000a	//		addi	$t2, $zero, 10 ->		addi	$t2, $zero, 10
+200b000b	//		addi	$t3, $zero, 11 ->		addi	$t3, $zero, 11
+200c000c	//		addi	$t4, $zero, 12 ->		addi	$t4, $zero, 12
+200d000d	//		addi	$t5, $zero, 13 ->		addi	$t5, $zero, 13
+200e000f	//		addi	$t6, $zero, 15 ->		addi	$t6, $zero, 15
+01204022	//		sub	$t0, $t1, $zero ->		sub	$t0, $t1, $zero
+210d000e	//		addi	$t5, $t0, 14 ->		addi	$t5, $t0, 14
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+8c8b0004	//		lw	$t3, 4($a0) ->		lw	$t3, 4($a0)
+012a6024	//		and	$t4, $t1, $t2 ->		and	$t4, $t1, $t2
+016c4022	//		sub	$t0, $t3, $t4 ->		sub	$t0, $t3, $t4
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+8c8b0010	//		lw	$t3, 16($a0) ->		lw	$t3, 16($a0)
+ac8b0010	//		sw	$t3, 16($a0) ->		sw	$t3, 16($a0)
+8c8b0010	//		lw	$t3, 16($a0) ->		lw	$t3, 16($a0)
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+01685820	//		add	$t3, $t3, $t0 ->		add	$t3, $t3, $t0
+31cc0008	//		andi	$t4, $t6, 8 ->		andi	$t4, $t6, 8
+016d4022	//		sub	$t0, $t3, $t5 ->		sub	$t0, $t3, $t5
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
+00000000	//		nop ->		nop
