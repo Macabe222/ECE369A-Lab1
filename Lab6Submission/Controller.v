@@ -5,11 +5,11 @@
 // the OpCode and FuncCode
 //////////////////////////////////////////////////////////////////////
 
-module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRead, MemWrite, Branch, MemSize, JumpReg, Jump, ExtOp);
+module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRead, MemWrite, Branch, MemSize, JumpReg, Jump, ExtOp, UsesRs, UsesRt);
     input [31:0] Instruction;
 
     // Control signals
-    output reg RegWrite, ALUSrc, MemRead, MemWrite, Branch, Jump, JumpReg, ExtOp;
+    output reg RegWrite, ALUSrc, MemRead, MemWrite, Branch, Jump, JumpReg, ExtOp, UsesRs, UsesRt;
     output reg [1:0] MemToReg, MemSize, RegDst;
     output reg [3:0] ALUOp;
 
@@ -31,6 +31,54 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = (Instruction[5:0] == 6'b001000);
                 RegWrite = !JumpReg;
                 Jump = 0;
+                // Hazard detection
+                case (Instruction[5:0])
+                    6'b000000: begin //sll
+                        UsesRs = 0;
+                        UsesRt = 1;
+                    end
+                    6'b000010: begin // srl
+                        UsesRs = 0;
+                        UsesRt = 1;
+                    end
+                    6'b001000: begin //jr
+                        UsesRs = 1;
+                        UsesRt = 0;
+                    end
+                    6'b100000: begin //add
+                        UsesRs = 1;
+                        UsesRt = 1;
+                    end
+                    6'b100010: begin //sub
+                        UsesRs = 1;
+                        UsesRt = 1;
+                    end
+                   6'b100100: begin // and
+                        UsesRs = 1'b1;
+                        UsesRt = 1'b1;
+                    end
+                    6'b100101: begin // or
+                        UsesRs = 1'b1;
+                        UsesRt = 1'b1;
+                    end
+                    6'b100110: begin // xor
+                        UsesRs = 1'b1;
+                        UsesRt = 1'b1;
+                    end
+                    6'b100111: begin // nor
+                        UsesRs = 1'b1;
+                        UsesRt = 1'b1;
+                    end
+                    6'b101010: begin // slt
+                        UsesRs = 1'b1;
+                        UsesRt = 1'b1;
+                    end
+                    default: begin
+                        UsesRs = 1'b0;
+                        UsesRt = 1'b0;
+                    end
+                endcase
+
             end
             6'b000001: begin // BGEZ, BLTZ
                 RegWrite = 0;
@@ -42,6 +90,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 Branch = 1;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 0;
                 case (Instruction[20:16])
                     5'b00001: ALUOp = 4'b1000; // BGEZ
                     5'b00000: ALUOp = 4'b1011; // BLTZ
@@ -62,6 +112,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0000;
                 JumpReg = 0;
                 Jump = 1;
+                UsesRs = 0;
+                UsesRt = 0;
             end
             6'b000011: begin // JAL
                 RegWrite = 1;
@@ -74,6 +126,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0000;
                 JumpReg = 0;
                 Jump = 1;
+                UsesRs = 0;
+                UsesRt = 0;
             end
             6'b000100: begin // BEQ
                 RegWrite = 0;
@@ -86,6 +140,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0001;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 1;
             end
             6'b000101: begin //BNE
                 RegWrite = 0;
@@ -98,6 +154,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b1100;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 1;
             end
             6'b000110: begin // BLEZ
                 RegWrite = 0;
@@ -110,6 +168,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b1010;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b000111: begin //BGTZ
                 RegWrite = 0;
@@ -122,6 +182,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b1001;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b001000: begin // ADDi
                 RegWrite = 1;
@@ -134,6 +196,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0000;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b001010: begin // SLTi
                 RegWrite = 1;
@@ -146,6 +210,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0110;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b001100: begin // ANDi
                 RegWrite = 1;
@@ -159,6 +225,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 ExtOp = 1;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b001101: begin // ORi
                 RegWrite = 1;
@@ -172,6 +240,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 ExtOp = 1;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b001110: begin // XORi
                 RegWrite = 1;
@@ -185,6 +255,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 ExtOp = 1;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b011100: begin // MUL
                 RegWrite = 1;
@@ -197,6 +269,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0111;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 1;
             end
             6'b100000: begin // LB
                 RegWrite = 1;
@@ -209,6 +283,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0000;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b100011: begin // LW
                 RegWrite = 1;
@@ -222,6 +298,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 MemSize = 2'b10;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b100001: begin // LH
                 RegWrite = 1;
@@ -235,6 +313,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 MemSize = 2'b01;
+                UsesRs = 1;
+                UsesRt = 0;
             end
             6'b101000: begin // SB
                 RegWrite = 0;
@@ -247,6 +327,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUOp = 4'b0000;
                 JumpReg = 0;
                 Jump = 0;
+                UsesRs = 1;
+                UsesRt = 1;
             end
             6'b101001: begin // SH
                 RegWrite = 0;
@@ -260,6 +342,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 MemSize = 2'b01;
+                UsesRs = 1;
+                UsesRt = 1;
             end
             6'b101011: begin // SW
                 RegWrite = 0;
@@ -273,6 +357,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 JumpReg = 0;
                 Jump = 0;
                 MemSize = 2'b10;
+                UsesRs = 1;
+                UsesRt = 1;
             end
             default: begin // Unknown opcode / NOP
                 RegWrite = 0;
@@ -285,6 +371,8 @@ module Controller(Instruction, RegWrite, ALUSrc, MemToReg, RegDst, ALUOp, MemRea
                 ALUSrc   = 0;
                 MemToReg = 2'b00;
                 ALUOp    = 4'b0000;
+                UsesRs = 0;
+                UsesRt = 0;
             end
         endcase
 

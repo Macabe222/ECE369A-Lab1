@@ -4,11 +4,12 @@ module HazardDetectionUnit_tb;
     reg [31:0] ID_Instruction;
     reg EX_RegWrite, MEM_RegWrite, WB_RegWrite;
     reg [4:0] EX_WriteReg, MEM_WriteReg, WB_WriteReg;
-    wire Stall;
+    wire Stall, UsesRs, UsesRt;
     integer stage;
     integer checks = 0;
+    Controller u0(ID_Instruction, , , , , , , , , , , , , UsesRs, UsesRt);
     HazardDetectionUnit dut(ID_Instruction, EX_RegWrite, EX_WriteReg,
-        MEM_RegWrite, MEM_WriteReg, WB_RegWrite, WB_WriteReg, Stall);
+        MEM_RegWrite, MEM_WriteReg, WB_RegWrite, WB_WriteReg, UsesRs, UsesRt, Stall);
 
     task expect_stall;
         input expected;

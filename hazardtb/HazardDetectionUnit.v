@@ -15,8 +15,6 @@ module HazardDetectionUnit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrit
     wire [4:0] rs;
     wire [4:0] rt;
 
-    assign opcode = ID_Instruction [31:26];
-    assign funct = ID_Instruction[5:0];
     assign rs = ID_Instruction[25:21];
     assign rt = ID_Instruction [20:16];
 
