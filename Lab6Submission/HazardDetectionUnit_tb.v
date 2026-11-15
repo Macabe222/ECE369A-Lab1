@@ -2,8 +2,8 @@
 // Direct combinational checks include false dependencies and $zero writes.
 module HazardDetectionUnit_tb;
     reg [31:0] ID_Instruction;
-    reg EX_RegWrite, MEM_RegWrite;
-    reg [4:0] EX_WriteReg, MEM_WriteReg;
+    reg EX_RegWrite, MEM_RegWrite, WB_RegWrite;
+    reg [4:0] EX_WriteReg, MEM_WriteReg, WB_WriteReg;
     wire Stall, UsesRs, UsesRt;
     integer stage;
     integer checks = 0;
