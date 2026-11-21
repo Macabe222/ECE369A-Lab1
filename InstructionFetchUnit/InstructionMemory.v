@@ -50,7 +50,7 @@ module InstructionMemory(Address, Instruction);
         for (i = 0; i < 1024; i = i + 1) begin
             Memory[i] = 32'd0;
         end
-        $readmemh("public_instruction_memory_lab6.mem", Memory);
+        $readmemh("vbsme_instruction_memory.mem", Memory);
     end
 
     always @(*) begin
