@@ -392,7 +392,7 @@ vbsme:
     addi    $v0, $zero, 0
     addi    $v1, $zero, 0
 
-    add     $s8, $zero, $ra
+    add     $a3, $zero, $ra
 
     # Read window and frame dimensions from memory
     lw      $t0, 0($a0)
@@ -596,7 +596,7 @@ search_done:
     add    $v1, $zero, $s1
 
     # Restore original return address
-    add    $ra, $zero, $s8
+    add    $ra, $zero, $a3
 
     # Return to the caller
     jr      $ra
