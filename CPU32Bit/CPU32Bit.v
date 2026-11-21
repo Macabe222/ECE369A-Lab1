@@ -7,7 +7,7 @@
 // Wires together all components neccessary to implement a RISC cpu.
 ////////////////////////////////////////////////////////////////////////////////
 
-module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
+module CPU32Bit(Clk, Rst, outV0, outV1);
     input Clk, Rst;
 
     reg ID_BranchCondition, ID_Redirect;
@@ -59,9 +59,7 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     reg [31:0] EX_Instruction, MEM_Instruction, WB_Instruction;
 
     // Output write data and program counter for display purposes
-    output reg [31:0] outWriteData;
-    output [31:0] outPC;
-    output [31:0] outInstruction;
+    output reg [31:0] outV0, outV1;
 
     //Hazard detection
 
@@ -256,39 +254,19 @@ module CPU32Bit(Clk, Rst, outWriteData, outPC, outInstruction);
     // Write back
     Mux32Bit3To1 u21(WB_WriteData, WB_MemReadData, WB_ALUResult, WB_PCPlusFour, WB_MemToReg); // Select write back data
 
-
-    // Assign output
-
-        always @(*) begin
-        outWriteData = 32'd0;
-        if (WB_RegWrite == 1'b1) begin
-            if (WB_WriteReg != 5'd0) begin
-                outWriteData = WB_WriteData;
+    always @(posedge Clk or posedge Rst) begin
+        if (Rst) begin
+            outV0 = 32'd0;
+            outV1 = 32'd0;
+        end
+        else if (WB_RegWrite)begin
+            if (WB_WriteReg == 5'd2) begin
+                outV0 = WB_WriteData;
+            end
+            if (WB_WriteReg == 5'd3) begin
+                outV1 = WB_WriteData;
             end
         end
     end
-
-
-    assign outPC = WB_PCPlusFour - 32'd4; // Assign output
-
-    // Keep track of instruction through pipeline so that the correct one is returned
-    always @(posedge Clk or posedge Rst) begin
-    if (Rst == 1'b1) begin
-        EX_Instruction <= 32'd0;
-        MEM_Instruction <= 32'd0;
-        WB_Instruction <= 32'd0;
-    end else begin
-        if (Stall == 1'b1) begin
-            EX_Instruction <= 32'd0;
-        end else begin
-            EX_Instruction <= ID_Instruction;
-        end
-
-        MEM_Instruction <= EX_Instruction;
-        WB_Instruction <= MEM_Instruction;
-    end
-end
-
-    assign outInstruction = WB_Instruction;
 
 endmodule
