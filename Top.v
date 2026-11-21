@@ -17,5 +17,5 @@ module Top(Clk, Reset, out7, en_out);
     ClkDiv u0(Clk, Reset, ClkOut);
     CPU32Bit u1(ClkOut, Reset, V0, V1);
     Two4DigitDisplay u2(Clk, V0[15:0], V1[15:0], out7, en_raw);
-    assign en_out = (Instruction == 32'h0) ? 8'hFF : en_raw;
+    assign en_out = en_raw;
 endmodule
