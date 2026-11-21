@@ -46,7 +46,7 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, MemSize, ReadData)
 
     output reg[31:0] ReadData; // Contents of memory location at Address
 
-    reg [31:0] DataMemory [0:1023];
+    reg [31:0] DataMemory [0:4095];
 
     // Initialize data memory to 0
     integer i;
@@ -63,16 +63,16 @@ module DataMemory(Address, WriteData, Clk, MemWrite, MemRead, MemSize, ReadData)
             case (MemSize)
                 2'b00: begin // SB
                     case (Address[1:0])
-                        2'b00: DataMemory[Address[11:2]][7:0] <= WriteData[7:0]; // First byte
-                        2'b01: DataMemory[Address[11:2]][15:8] <= WriteData[7:0]; // Second byte
-                        2'b10: DataMemory[Address[11:2]][23:16] <= WriteData[7:0]; // Third byte
-                        2'b11: DataMemory[Address[11:2]][31:24] <= WriteData[7:0]; // Fourth byte
+                        2'b00: DataMemory[Address[13:2]][7:0] <= WriteData[7:0]; // First byte
+                        2'b01: DataMemory[Address[13:2]][15:8] <= WriteData[7:0]; // Second byte
+                        2'b10: DataMemory[Address[13:2]][23:16] <= WriteData[7:0]; // Third byte
+                        2'b11: DataMemory[Address[13:2]][31:24] <= WriteData[7:0]; // Fourth byte
                     endcase
                 end
                 2'b01: begin // SH
                     case (Address[1])
-                        1'b0: DataMemory[Address[11:2]][15:0] <= WriteData[15:0]; // First half word
-                        1'b1: DataMemory[Address[11:2]][31:16] <= WriteData[15:0]; // Second half word
+                        1'b0: DataMemory[Address[13:2]][15:0] <= WriteData[15:0]; // First half word
+                        1'b1: DataMemory[Address[13:2]][31:16] <= WriteData[15:0]; // Second half word
                     endcase
                 end
                 2'b10: DataMemory[Address[11:2]] <= WriteData; // SW
