@@ -24,7 +24,7 @@ module CPU32Bit(Clk, Rst, outV0, outV1);
     // 2 bit instruction decode wires
     wire [1:0] ID_RegDst, ID_MemToReg, ID_MemSize;
     // 2 bit execute wires
-    wire [1:0] EX_RegDst, EX_MemToReg, EX_MemSize;
+    wire [1:0] EX_RegDst, EX_MemToReg, EX_MemSize, ForwardSrc1, ForwardSrc2;
     // 2 bit memory wires
     wire [1:0] MEM_MemToReg, MEM_MemSize;
     // 2  bit write back wires
@@ -36,7 +36,7 @@ module CPU32Bit(Clk, Rst, outV0, outV1);
     // 5 bit instruction decode wires
     wire [4:0] ID_Shamt;
     // 5 bit execute wires
-    wire [4:0] EX_WriteReg, EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt;
+    wire [4:0] EX_WriteReg, EX_Rs, EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt;
     // 5 bit memory wires
     wire [4:0] MEM_WriteReg;
     // 5 bit write back wires
@@ -49,7 +49,7 @@ module CPU32Bit(Clk, Rst, outV0, outV1);
     // 32 bit instruction decode wires
     wire [31:0] ID_ReadData1, ID_ReadData2, ID_Instruction, ID_PCPlusFour, ID_Immediate, ID_SignedOffset, ID_BranchOffset, ID_BranchTarget;
     // 32 bit execute wires
-    wire [31:0] EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate, EX_AddResult, EX_AddIn, EX_ALUIn, EX_ALUResult;
+    wire [31:0] EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate, EX_AddResult, EX_AddIn, EX_ALUIn, EX_ALUResult, EX_ALUTemp, EX_ALUIn2;
     // 32 bit memory wires
     wire [31:0] MEM_AddResult, MEM_ReadData2, MEM_ALUResult, MEM_PCPlusFour, MEM_MemReadData;
     // 32 bit write back wires
@@ -195,6 +195,9 @@ module CPU32Bit(Clk, Rst, outV0, outV1);
     end
 
 
+    // Forwarding Unit
+    ForwardingUnit u22(EX_PotWriteReg1, EX_Rs, MEM_WriteReg, WB_WriteReg, MEM_RegWrite, WB_RegWrite, ForwardSrc1, ForwardSrc2);
+
     // Instruction fetch
     InstructionMemory u4(Address, Instruction); // Retrieve instruction from instruction memory
     ProgramCounter u5(PCInput, Address, Rst, Clk, PCWrite); // Store current instruction addresss in PC
@@ -214,28 +217,30 @@ module CPU32Bit(Clk, Rst, outV0, outV1);
     // Sign extend immediate number
     SignExtension u13(ID_Instruction[15:0], ID_Immediate, ID_ExtOp);
     // Hazard detection
-    HazardDetectionUnit hazard_unit(ID_Instruction, EX_RegWrite, EX_WriteReg, MEM_RegWrite, MEM_WriteReg, ID_UsesRs, ID_UsesRt, Stall);
+    HazardDetectionUnit hazard_unit(ID_Instruction, ID_Branch, ID_JumpReg, EX_RegWrite, EX_MemRead, EX_WriteReg, MEM_RegWrite, MEM_WriteReg, ID_UsesRs, ID_UsesRt, Stall);
 
     // Instruction decode -> execute register
     ID_EX u1(
         Next_RegWrite, Next_ALUSrc, Next_ALUOp, Next_RegDst, Next_MemToReg, Next_MemRead, Next_MemWrite, Next_MemSize, Next_Branch,
-        ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[20:16], ID_Instruction[15:11], ID_Instruction[10:6], Clk,
+        ID_ReadData1, ID_ReadData2, ID_PCPlusFour, ID_Immediate, ID_Instruction[25:21], ID_Instruction[20:16], ID_Instruction[15:11], ID_Instruction[10:6], Clk,
         EX_RegWrite, EX_ALUSrc, EX_ALUOp, EX_RegDst, EX_MemToReg, EX_MemRead, EX_MemWrite,
-        EX_MemSize, EX_Branch, EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate,
+        EX_MemSize, EX_Branch, EX_ReadData1, EX_ReadData2, EX_PCPlusFour, EX_Immediate, EX_Rs,
         EX_PotWriteReg1, EX_PotWriteReg2, EX_Shamt, Rst
     );
 
     // Execute
     ShiftLeftTwo u14(EX_Immediate, EX_AddIn); // Calculate branch offset
     Adder32Bit u15(EX_PCPlusFour, EX_AddIn, EX_AddResult); // Add branch offset to PC+4
-    Mux32Bit2To1 u16(EX_ALUIn, EX_ReadData2, EX_Immediate, EX_ALUSrc); // Select between immediate and read data 2
+    Mux32Bit3To1 u24(EX_ALUTemp, EX_ReadData2, MEM_ALUResult, WB_WriteData, ForwardSrc2); // forward Rt
+    Mux32Bit2To1 u16(EX_ALUIn, EX_ALUTemp, EX_Immediate, EX_ALUSrc); // Select between immediate, read data 2 and forwarded data
+    Mux32Bit3To1 u23(EX_ALUIn2, EX_ReadData1, MEM_ALUResult, WB_WriteData, ForwardSrc1); // Select between ReadData1 and forwarding options
     ALUControlUnit u17(EX_ALUOp, EX_Immediate[5:0], EX_ALUControlSignal); // Capture correct ALU control signal
-    ALU32Bit u18(EX_ALUControlSignal, EX_ReadData1, EX_ALUIn, EX_Shamt, EX_ALUResult, EX_Zero); // Calculate ALU result based on inputs and control signal
+    ALU32Bit u18(EX_ALUControlSignal, EX_ALUIn2, EX_ALUIn, EX_Shamt, EX_ALUResult, EX_Zero); // Calculate ALU result based on inputs and control signal
     Mux5Bit3To1 u19(EX_WriteReg, EX_PotWriteReg1, EX_PotWriteReg2, 5'd31, EX_RegDst); // Select correct write register (31 is $ra)
 
     // Execute -> memory register
     EX_MEM u2(
-        EX_Branch, EX_MemWrite, EX_MemRead, EX_MemSize, EX_MemToReg, EX_RegWrite, EX_AddResult, EX_ReadData2,
+        EX_Branch, EX_MemWrite, EX_MemRead, EX_MemSize, EX_MemToReg, EX_RegWrite, EX_AddResult, EX_ALUTemp,
         EX_Zero, EX_ALUResult, EX_WriteReg, EX_PCPlusFour, Clk, MEM_Branch, MEM_MemWrite, MEM_MemRead,
         MEM_MemSize, MEM_MemToReg, MEM_RegWrite, MEM_AddResult, MEM_ReadData2,
         MEM_Zero, MEM_ALUResult, MEM_WriteReg, MEM_PCPlusFour, Rst

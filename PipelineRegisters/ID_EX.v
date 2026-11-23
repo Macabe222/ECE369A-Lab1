@@ -6,7 +6,7 @@
 
 module ID_EX(
     RegWrite, ALUSrc, ALUOp, RegDst, MemToReg, MemRead, MemWrite, MemSize, Branch,
-    ReadData1, ReadData2, PCPlusFour, Immediate, PotWriteReg1, PotWriteReg2, Shamt, Clk,
+    ReadData1, ReadData2, PCPlusFour, Immediate, Rs, PotWriteReg1, PotWriteReg2, Shamt, Clk,
     outRegWrite, outALUSrc, outALUOp, outRegDst, outMemToReg, outMemRead, outMemWrite,
     outMemSize, outBranch, outReadData1, outReadData2, outPCPlusFour, outImmediate,
     outPotWriteReg1, outPotWriteReg2, outShamt, Reset
@@ -68,4 +68,3 @@ module ID_EX(
         end
     end
 endmodule
-
