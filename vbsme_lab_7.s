@@ -439,9 +439,11 @@ right_loop:
 
     # Save row of best position
     add     $s0, $zero, $t4
+    add     $v0, $zero, $s0
 
     # Save column of best position
     add     $s1, $zero, $t5
+    add     $v1, $zero, $s1
 
 right_no_update:
     # If at max column, stop moving right
@@ -483,9 +485,11 @@ down_loop:
 
     # Save row of best position
     add    $s0, $zero, $t4
+    add    $v0, $zero, $s0
 
     # Save column of best position
     add    $s1, $zero, $t5
+    add    $v1, $zero, $s1
 
 down_no_update:
     # If at max row, stop moving down
@@ -522,9 +526,11 @@ left_loop:
 
     # Save row of best position
     add    $s0, $zero, $t4
+    add    $v0, $zero, $s0
 
     # Save column of best position
     add    $s1, $zero, $t5
+    add    $v1, $zero, $s1
 
 left_no_update:
     # If at min column, stop moving left
@@ -561,9 +567,11 @@ up_loop:
 
     # Save row of best position
     add    $s0, $zero, $t4
+    add    $v0, $zero, $s0
 
     # Save column of best position
     add    $s1, $zero, $t5
+    add    $v1, $zero, $s1
 
 up_no_update:
     # If at min row, stop moving up
@@ -600,62 +608,50 @@ search_done:
 
     # Return to the caller
     jr      $ra
+
 calculate_sad:
-    addi    $s2, $zero, 0
-    addi    $t6, $zero, 0
-
-sad_row_loop:
-    slt     $t8, $t6, $t2
-    beq     $t8, $zero, sad_done
-
-    addi    $t7, $zero, 0
-
-sad_col_loop:
-    # If row is done branch to next row
-    slt     $t8, $t7, $t3
-    beq     $t8, $zero, sad_next_row
-
-    # Calculate frame row
-    # Current row frame position + current window row
-    add     $t8, $t4, $t6
-    # Multiply frame row by frame width
-    mul     $t8, $t8, $t1
-    # Add the current column position
+    lw      $t1, 4($a0)             # frame width
+    lw      $t3, 12($a0)            # window width
+    lw      $t2, 8($a0)             # window rows / row counter
+    # frame[$t4][$t5]
+    mul     $t8, $t4, $t1
     add     $t8, $t8, $t5
-    # Add the current window column offset
-    add     $t8, $t8, $t7
-    # Convert to byte offset and load
     sll     $t8, $t8, 2
     add     $t8, $a1, $t8
-    lw      $t8, 0($t8)
+    # bytes from end of a window row to start of the next frame row
+    sub     $t1, $t1, $t3
+    sll     $t1, $t1, 2
+    # $t3 = w*4 : bytes in one window row
+    sll     $t3, $t3, 2
+    # &window[0][0]
+    add     $t9, $a2, $zero
+    # Running sum = 0
+    addi    $s2, $zero, 0
 
-    # Current  window row * window width
-    mul     $t9, $t6, $t3
-    # Add current window column
-    add     $t9, $t9, $t7
-    # Convert to byte offset load
-    sll     $t9, $t9, 2
-    add     $t9, $a2, $t9
-    lw      $t9, 0($t9)
+sad_row:
+    addi    $t2, $t2, -1            # decrement early so the bne doesn't stall later
+    add     $t0, $t8, $t3           # $t0 = address just past the end of this frame row
 
-    # Calculate difference
-    sub     $t8, $t8, $t9
-    # If difference is positive skip to difference positive
-    # otherwise subtract from zero to make positive
-    bgez    $t8, difference_positive
-    sub     $t8, $zero, $t8
+sad_col:
+    lw      $t7, 0($t8)             # frame element
+    lw      $t6, 0($t9)             # window element
+    addi    $t8, $t8, 4             # advance pointers
+    addi    $t9, $t9, 4
+    sub     $t7, $t7, $t6           # diff
+    # absolute difference using bit masking
+    slt     $t6, $t7, $zero
+    sub     $t6, $zero, $t6
+    xor     $t7, $t7, $t6
+    sub     $t7, $t7, $t6
+    add     $s2, $s2, $t7           # sum += diff
+    bne     $t8, $t0, sad_col
 
-difference_positive:
-    # Add the current absolute difference to the running total
-    add     $s2, $s2, $t8
-    # Increment window column
-    addi    $t7, $t7, 1
-    j       sad_col_loop
-
-sad_next_row:
-    # Increment window row
-    addi    $t6, $t6, 1
-    j       sad_row_loop
+    # End of a window row, check and see if the current sum is greater than the best,
+    # if it is this window can't win so move to the next one
+    slt     $t6, $s2, $s3
+    add     $t8, $t8, $t1           # move frame pointer to next row
+    beq     $t6, $zero, sad_done
+    bne     $t2, $zero, sad_row
 
 sad_done:
     jr      $ra
